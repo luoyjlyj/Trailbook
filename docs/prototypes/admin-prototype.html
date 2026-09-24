@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>路书 · Web运营管理后台原型</title>
+<style>
+:root{--ink:#1e342c;--muted:#839187;--green:#246352;--green2:#174b3f;--mint:#e8f1e9;--mint2:#dce9dc;--paper:#f6f7f3;--white:#fff;--line:#e8ece6;--amber:#c88650;--amberbg:#fff1e4;--blue:#6b8e9d;--shadow:0 10px 35px rgba(32,59,45,.08);--sidebar:248px}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--paper)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(75,143,112,.23);outline-offset:2px}
+.app{min-height:100vh;display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr)}
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar);background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;padding:22px 14px 16px;z-index:5}
+.brand{display:flex;align-items:center;gap:11px;padding:0 11px 24px}
+.brand-mark{width:38px;height:38px;border-radius:13px 13px 13px 4px;background:var(--green);display:grid;place-items:center;color:#fff;box-shadow:0 7px 18px rgba(36,99,82,.19)}
+.brand-mark svg{width:23px;height:23px}
+.brand-name{font-size:17px;font-weight:850;letter-spacing:.03em}
+.brand-name small{display:block;font-size:9px;letter-spacing:.15em;color:#9aa69e;font-weight:700;margin-top:2px}
+.workspace{margin:0 5px 20px;padding:11px 12px;background:#f4f6f1;border:1px solid #ebeee8;border-radius:13px;display:flex;align-items:center;gap:10px}
+.workspace-dot{width:9px;height:9px;border-radius:50%;background:#71a27e;box-shadow:0 0 0 4px #e2eee2}
+.workspace strong{font-size:11px;display:block}
+.workspace small{font-size:9px;color:var(--muted);display:block;margin-top:3px}
+.nav-label{padding:0 12px;margin:13px 0 7px;color:#a0aaa2;font-size:9px;letter-spacing:.14em;font-weight:800}
+.nav{display:grid;gap:4px}
+.nav button{position:relative;width:100%;display:flex;align-items:center;gap:12px;border:0;background:transparent;color:#718077;text-align:left;border-radius:11px;padding:11px 12px;font-size:12px;font-weight:650;transition:.16s}
+.nav button:hover{background:#f4f6f2;color:var(--green)}
+.nav button.active{background:#e9f1e9;color:var(--green);font-weight:800}
+.nav button.active:before{content:"";position:absolute;left:-14px;top:10px;bottom:10px;width:3px;background:var(--green);border-radius:0 4px 4px 0}
+.nav .ico{width:18px;height:18px;display:grid;place-items:center;color:inherit;flex:0 0 auto}
+.nav svg{width:18px;height:18px}
+.nav .count{margin-left:auto;background:#fff0e4;color:#bb794d;border-radius:99px;min-width:21px;text-align:center;padding:3px 6px;font-size:9px;font-weight:800}
+.sidebar-foot{margin-top:auto;border-top:1px solid var(--line);padding:15px 9px 0;display:flex;align-items:center;gap:10px}
+.avatar{width:33px;height:33px;border-radius:50%;background:#d9e8db;color:var(--green);display:grid;place-items:center;font-size:11px;font-weight:850}
+.sidebar-foot strong{font-size:10px;display:block}
+.sidebar-foot small{font-size:9px;color:var(--muted);display:block;margin-top:3px}
+.sidebar-foot .more{margin-left:auto;border:0;background:transparent;color:#89968d;font-size:18px}
+.main{grid-column:2;min-width:0}
+.topbar{height:72px;position:sticky;top:0;z-index:4;background:rgba(255,255,255,.93);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:18px;padding:0 34px}
+.mobile-menu{display:none;border:0;background:#f2f5f0;color:var(--green);width:36px;height:36px;border-radius:10px}
+.crumb{min-width:180px}
+.crumb small{display:block;color:#9aa69e;font-size:9px;margin-bottom:3px}
+.crumb strong{font-size:13px}
+.top-search{height:36px;max-width:320px;flex:1;display:flex;align-items:center;gap:8px;background:#f5f7f3;border:1px solid #edf0e9;border-radius:10px;padding:0 11px;color:#92a096}
+.top-search input{width:100%;border:0;outline:0;background:transparent;font-size:10px;color:var(--ink)}
+.top-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
+.select-city{height:35px;border:1px solid #e7ebe4;border-radius:10px;background:#fff;padding:0 10px;color:#617267;font-size:10px}
+.icon-button{width:35px;height:35px;border:1px solid #e8ece6;background:#fff;border-radius:10px;color:#738178;display:grid;place-items:center;position:relative}
+.icon-button svg{width:17px;height:17px}
+.notification-dot{position:absolute;width:6px;height:6px;border-radius:50%;background:#e08e61;right:7px;top:7px;border:1px solid #fff}
+.top-user{display:flex;align-items:center;gap:8px;margin-left:2px}
+.top-user .avatar{width:31px;height:31px}
+.top-user strong{font-size:10px}
+.top-user small{display:block;color:#9aa69e;font-size:8px;margin-top:2px}
+.content{max-width:1520px;margin:0 auto;padding:30px 34px 54px}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:23px}
+.page-head h1{font-size:25px;letter-spacing:-.04em;margin:0 0 5px}
+.page-head p{font-size:11px;color:var(--muted);margin:0;line-height:1.55}
+.eyebrow{color:var(--green);font-size:9px;letter-spacing:.15em;font-weight:850;margin-bottom:7px}
+.head-actions{display:flex;gap:8px;align-items:center}
+.btn{border:1px solid #dfe7df;background:#fff;color:#577063;border-radius:9px;padding:9px 12px;font-size:10px;font-weight:750;display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}
+.btn:hover{border-color:#b8d0bd;background:#f8fbf7}
+.btn.primary{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 5px 12px rgba(36,99,82,.12)}
+.btn.primary:hover{background:var(--green2)}
+.btn.soft{background:#eaf2e9;border-color:#eaf2e9;color:var(--green)}
+.btn.danger{color:#b86c53;background:#fff9f6;border-color:#f1dfd8}
+.btn.small{padding:6px 9px;font-size:9px}
+.grid{display:grid;gap:15px}
+.kpis{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:17px}
+.card{background:#fff;border:1px solid #e9ede7;border-radius:15px;box-shadow:0 2px 8px rgba(36,64,48,.025)}
+.kpi{padding:17px 18px;min-height:117px;position:relative;overflow:hidden}
+.kpi-top{display:flex;align-items:center;justify-content:space-between}
+.kpi-label{font-size:10px;color:#829087;font-weight:650}
+.kpi-icon{width:31px;height:31px;border-radius:10px;background:#edf4ec;color:var(--green);display:grid;place-items:center}
+.kpi-icon svg{width:16px;height:16px}
+.kpi-value{font-size:27px;letter-spacing:-.05em;font-weight:800;margin:12px 0 5px}
+.kpi-foot{font-size:9px;color:#8c9990}
+.up{color:#4d9665;font-weight:800}
+.down{color:#bb7956;font-weight:800}
+.two-col{grid-template-columns:minmax(0,1.55fr) minmax(320px,1fr);margin-bottom:16px}
+.card-head{padding:16px 18px 0;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.card-head h2{font-size:12px;margin:0;font-weight:800}
+.card-head p{font-size:9px;color:#98a39b;margin:4px 0 0}
+.card-head .more-link{border:0;background:none;color:var(--green);font-size:9px;font-weight:750}
+.chart-area{padding:11px 15px 15px}
+.chart-legend{display:flex;gap:14px;color:#929e95;font-size:9px;padding:4px 3px 5px}
+.legend-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;background:#4f8974}
+.legend-dot.orange{background:#d9a170}
+.chart{width:100%;height:190px;display:block}
+.chart-grid{stroke:#edf0ea;stroke-width:1}
+.chart-text{font-size:8px;fill:#a3ada5}
+.chart-line{fill:none;stroke:#4a8870;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.chart-area-fill{fill:url(#fillGreen);opacity:.8}
+.chart-line2{fill:none;stroke:#d7a06f;stroke-width:2;stroke-dasharray:5 5}
+.source-mini-list{padding:6px 17px 15px}
+.source-mini{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0f2ed}
+.source-mini:last-child{border:0}
+.source-thumb{width:35px;height:35px;border-radius:10px;background:linear-gradient(145deg,#355f50,#c5d5b3);color:#fff;display:grid;place-items:center;font-size:13px}
+.source-info{min-width:0;flex:1}
+.source-info strong{display:block;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.source-info small{display:block;font-size:8px;color:#9aa59d;margin-top:4px}
+.pill{display:inline-flex;align-items:center;border-radius:99px;padding:5px 8px;font-size:8px;font-weight:750;white-space:nowrap}
+.pill.green{background:#e8f2e8;color:#4c8662}
+.pill.amber{background:#fff0e3;color:#b7774c}
+.pill.gray{background:#f0f2ee;color:#89958c}
+.pill.blue{background:#eaf2f5;color:#5d8494}
+.table-card{overflow:hidden}
+.table-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid #edf0ea}
+.toolbar-left,.toolbar-right{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.filter-chip{border:1px solid #e5eae3;background:#fff;color:#88958b;border-radius:99px;padding:7px 10px;font-size:9px;font-weight:700}
+.filter-chip.active{background:#e7f0e7;color:var(--green);border-color:#d9e8da}
+.table-search{height:31px;display:flex;align-items:center;gap:6px;border:1px solid #e8ece6;border-radius:8px;padding:0 9px;color:#a0aaa2}
+.table-search input{border:0;outline:0;width:155px;font-size:9px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;background:#fafbf8;color:#98a39a;font-size:8px;font-weight:800;letter-spacing:.06em;padding:11px 14px;white-space:nowrap}
+td{padding:12px 14px;border-top:1px solid #f0f2ed;color:#586a5f;font-size:9px;vertical-align:middle}
+tbody tr:hover{background:#fbfcf9}
+.row-title{display:flex;align-items:center;gap:9px;min-width:170px}
+.row-thumb{width:35px;height:35px;border-radius:9px;display:grid;place-items:center;color:#fff;font-size:14px;flex:0 0 auto;background:linear-gradient(145deg,#4b7862,#a9b996)}
+.row-thumb.food{background:linear-gradient(145deg,#b16c4d,#efbf8c)}
+.row-thumb.night{background:linear-gradient(145deg,#263c57,#dfad63)}
+.row-title strong{display:block;color:#31463a;font-size:9px}
+.row-title small{display:block;font-size:8px;color:#9ca79e;margin-top:3px}
+.row-actions{display:flex;gap:5px;align-items:center}
+.row-actions button{border:0;background:transparent;color:var(--green);font-size:9px;font-weight:750;padding:5px}
+.row-actions button:hover{text-decoration:underline}
+.page-grid{grid-template-columns:minmax(0,1.45fr) minmax(300px,.85fr)}
+.progress-card{padding:17px}
+.progress-top{display:flex;align-items:center;justify-content:space-between}
+.progress-top strong{font-size:11px}
+.progress-top small{color:#929f94;font-size:9px}
+.progress-line{height:6px;background:#eef1eb;border-radius:99px;margin:13px 0 8px;overflow:hidden}
+.progress-line i{display:block;height:100%;width:72%;background:#5b9574;border-radius:99px}
+.barset{display:grid;grid-template-columns:repeat(7,1fr);align-items:end;gap:10px;height:130px;padding:10px 5px 0;border-bottom:1px solid #eef0eb}
+.barcol{display:flex;flex-direction:column;align-items:center;justify-content:end;gap:7px;height:100%}
+.bar{width:min(25px,70%);border-radius:5px 5px 2px 2px;background:#dbe9dc;position:relative}
+.bar.active{background:#52896c}
+.barcol small{font-size:8px;color:#9aa59d}
+.insight-box{padding:13px;border-radius:12px;background:#f1f6ef;margin:12px 17px;color:#647a68}
+.insight-box strong{font-size:9px}
+.insight-box p{font-size:8px;line-height:1.5;margin:5px 0 0;color:#87968a}
+.section-gap{margin-top:16px}
+.score-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:17px}
+.score-row{border:1px solid #edf0ea;border-radius:12px;padding:12px}
+.score-row-top{display:flex;align-items:center;justify-content:space-between}
+.score-row strong{font-size:10px}
+.score-row output{font-size:10px;color:var(--green);font-weight:800}
+.score-row small{display:block;color:#96a197;font-size:8px;margin-top:4px}
+.score-row input{width:100%;margin:11px 0 0;accent-color:var(--green)}
+.toggle-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #eff1ec}
+.toggle-row:last-child{border:0}
+.toggle{appearance:none;width:32px;height:18px;border-radius:99px;background:#dfe5de;position:relative;transition:.18s;flex:0 0 auto}
+.toggle:before{content:"";position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:white;box-shadow:0 1px 4px #0002;transition:.18s}
+.toggle:checked{background:#5d9675}
+.toggle:checked:before{transform:translateX(14px)}
+.toggle-row strong{font-size:9px;display:block}
+.toggle-row small{font-size:8px;color:#98a49a;display:block;margin-top:3px}
+.route-layout{display:grid;grid-template-columns:minmax(310px,.85fr) minmax(400px,1.2fr);gap:14px}
+.route-panel{padding:15px}
+.day-tabs{display:flex;gap:6px;margin-bottom:14px}
+.day-tabs button{border:1px solid #e6ebe4;background:#fff;border-radius:9px;padding:8px 11px;color:#87948a;font-size:9px}
+.day-tabs button.active{background:var(--green);color:#fff;border-color:var(--green)}
+.stop{display:grid;grid-template-columns:47px 15px minmax(0,1fr);gap:8px;position:relative;padding:10px 0}
+.stop-time{font-size:9px;color:#73847a;font-weight:800;padding-top:2px}
+.stop-line{position:relative;display:flex;justify-content:center}
+.stop-line:before{content:"";position:absolute;top:10px;bottom:-14px;border-left:1px dashed #c8d6c9}
+.stop:last-child .stop-line:before{display:none}
+.stop-dot{width:9px;height:9px;border:2px solid var(--green);border-radius:50%;background:#fff;position:relative;z-index:1}
+.stop.food .stop-dot{border-color:#d68b61}
+.stop-card{border:1px solid #edf0ea;border-radius:11px;padding:10px 11px;cursor:pointer}
+.stop-card:hover{border-color:#b8d0bd;background:#fcfefb}
+.stop-card strong{font-size:10px;display:block}
+.stop-card p{font-size:8px;color:#8c9990;line-height:1.45;margin:4px 0 0}
+.stop-meta{display:flex;gap:6px;margin-top:7px}
+.map-card{position:relative;min-height:465px;overflow:hidden;border-radius:14px;background:#e9efe7;border:1px solid #e0e8de}
+.map-svg{position:absolute;inset:0;width:100%;height:100%}
+.map-badge{position:absolute;top:13px;left:14px;border:1px solid #dce5dc;background:#fffEFAe8;border-radius:10px;padding:9px 11px;font-size:9px;color:#637868;box-shadow:0 5px 16px #273e2c12}
+.map-key{position:absolute;right:14px;top:14px;background:#fff;border:1px solid #e7ece5;border-radius:10px;padding:9px 11px;display:grid;gap:7px;font-size:8px;color:#7d8a80}
+.key-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:5px}
+.key-dot.orange{background:#d7875f}
+.map-marker{position:absolute;width:29px;height:29px;border:2px solid #fff;border-radius:10px 10px 10px 3px;background:var(--green);color:#fff;display:grid;place-items:center;box-shadow:0 5px 13px #263d2c30;font-size:9px;font-weight:850;cursor:pointer}
+.map-marker.food{background:#d7875f}
+.map-marker.m1{left:17%;top:70%}.map-marker.m2{left:35%;top:54%}.map-marker.m3{left:57%;top:44%}.map-marker.m4{left:76%;top:28%}
+.map-caption{position:absolute;bottom:14px;left:14px;background:#fff;border-radius:10px;padding:8px 10px;font-size:8px;color:#748579}
+.route-tip{font-size:8px;line-height:1.5;color:#94a095;margin:10px 2px 0}
+.source-connectors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.connector{padding:15px}
+.connector-head{display:flex;align-items:center;gap:10px}
+.connector-logo{width:35px;height:35px;border-radius:11px;background:#f3e5dd;color:#a3654d;display:grid;place-items:center;font-size:13px;font-weight:850}
+.connector:nth-child(2) .connector-logo{background:#ebedf6;color:#6671a0}
+.connector:nth-child(3) .connector-logo{background:#e5f1e8;color:#3f8860}
+.connector h3{font-size:10px;margin:0}
+.connector p{font-size:8px;color:#94a097;line-height:1.5;margin:11px 0}
+.connector .btn{width:100%}
+.settings-grid{grid-template-columns:minmax(0,1.3fr) minmax(280px,.8fr)}
+.settings-item{padding:15px 17px;border-bottom:1px solid #eef1eb}
+.settings-item:last-child{border:0}
+.settings-item strong{display:block;font-size:10px}
+.settings-item small{display:block;color:#939f95;font-size:8px;margin-top:4px}
+.settings-item .state{float:right}
+.segmented{display:flex;gap:4px;background:#f3f5f1;border-radius:9px;padding:3px}
+.segmented button{border:0;background:transparent;color:#859187;padding:7px 11px;border-radius:7px;font-size:9px}
+.segmented button.active{background:#fff;color:var(--green);box-shadow:0 1px 4px #183c2b12}
+.empty-note{padding:26px;text-align:center;color:#97a39a;font-size:9px}
+.modal-backdrop{position:fixed;inset:0;background:rgba(18,34,27,.38);backdrop-filter:blur(3px);z-index:20;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-backdrop.open{display:flex}
+.modal{width:min(520px,100%);background:#fff;border-radius:17px;box-shadow:0 24px 80px #14261c40;overflow:hidden;animation:appear .16s ease-out}
+@keyframes appear{from{opacity:0;transform:translateY(7px) scale(.99)}to{opacity:1;transform:none}}
+.modal-head{display:flex;justify-content:space-between;align-items:center;padding:16px 19px;border-bottom:1px solid #edf0ea}
+.modal-head h2{font-size:13px;margin:0}
+.modal-head button{border:0;background:#f3f5f1;border-radius:8px;width:28px;height:28px;color:#7e8c81}
+.modal-body{padding:18px 19px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:grid;gap:6px}
+.field.full{grid-column:1/-1}
+.field label{font-size:9px;color:#748278;font-weight:750}
+.field input,.field select,.field textarea{width:100%;border:1px solid #e6ebe4;border-radius:9px;background:#fff;padding:9px 10px;font-size:10px;color:var(--ink)}
+.field textarea{min-height:72px;resize:vertical}
+.modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:13px 19px;border-top:1px solid #edf0ea}
+.toast{position:fixed;right:25px;bottom:24px;z-index:30;background:#244f40;color:#fff;padding:11px 15px;border-radius:11px;box-shadow:0 9px 30px #203b2e30;font-size:10px;opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s}
+.toast.show{opacity:1;transform:none}
+@media(max-width:1180px){:root{--sidebar:218px}.content{padding:25px 23px}.topbar{padding:0 23px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.source-connectors{grid-template-columns:1fr}}
+@media(max-width:850px){:root{--sidebar:0px}.app{display:block}.sidebar{transform:translateX(-100%);transition:.2s;width:248px;box-shadow:var(--shadow)}.sidebar.open{transform:none}.main{margin:0}.mobile-menu{display:grid;place-items:center}.topbar{padding:0 15px;gap:10px}.crumb{min-width:0}.top-search{max-width:none}.top-actions .select-city,.top-user div:not(.avatar){display:none}.content{padding:22px 15px 40px}.two-col,.page-grid,.route-layout,.settings-grid{grid-template-columns:1fr}.route-layout{gap:12px}.map-card{min-height:360px}}
+@media(max-width:560px){.topbar{height:60px}.crumb small{display:none}.crumb strong{font-size:11px}.top-search{display:none}.content{padding-top:17px}.page-head{align-items:flex-start;flex-direction:column}.head-actions{align-self:stretch}.kpis{grid-template-columns:1fr 1fr;gap:9px}.kpi{padding:12px;min-height:105px}.kpi-value{font-size:23px}.two-col{gap:10px}.table-card{overflow-x:auto}.table-toolbar{min-width:650px}table{min-width:680px}.source-connectors{grid-template-columns:1fr}.score-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.map-card{min-height:330px}.top-actions{gap:5px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18.5 9.2 5l4.2 9.5 2.1-5 4.5 9"/><path d="M7 18.5h13"/></svg></div>
+      <div class="brand-name">路书<small>TRAVEL OPERATIONS</small></div>
+    </div>
+    <div class="workspace"><span class="workspace-dot"></span><div><strong>路书 · 主运营空间</strong><small>重庆示例数据</small></div></div>
+    <div class="nav-label">工作台</div>
+    <nav class="nav" aria-label="后台主导航">
+      <button class="active" data-page="overview"><span class="ico" data-ico="grid"></span>运营总览</button>
+      <button data-page="trips"><span class="ico" data-ico="calendar"></span>用户行程<span class="count">28</span></button>
+    </nav>
+    <div class="nav-label">内容运营</div>
+    <nav class="nav" aria-label="内容运营">
+      <button data-page="sources"><span class="ico" data-ico="inbox"></span>攻略来源审核<span class="count">12</span></button>
+      <button data-page="places"><span class="ico" data-ico="pin"></span>地点与美食库</button>
+      <button data-page="routes"><span class="ico" data-ico="route"></span>路线方案</button>
+      <button data-page="rules"><span class="ico" data-ico="sliders"></span>AI 推荐规则</button>
+    </nav>
+    <div class="nav-label">系统</div>
+    <nav class="nav" aria-label="系统设置">
+      <button data-page="analytics"><span class="ico" data-ico="chart"></span>数据分析</button>
+      <button data-page="settings"><span class="ico" data-ico="settings"></span>服务与设置</button>
+    </nav>
+    <div class="sidebar-foot"><span class="avatar">林</span><div><strong>林 · 运营管理员</strong><small>管理员账号</small></div><button class="more" aria-label="更多">···</button></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="mobile-menu" id="mobile-menu" aria-label="打开菜单">☰</button>
+      <div class="crumb"><small>路书管理后台 / <span id="crumb-group">工作台</span></small><strong id="page-title">运营总览</strong></div>
+      <label class="top-search"><span data-ico="search"></span><input id="global-search" placeholder="搜索地点、路线或攻略来源"></label>
+      <div class="top-actions">
+        <select class="select-city" id="city-filter" aria-label="切换城市"><option>重庆</option><option>成都</option><option>杭州</option><option>西安</option></select>
+        <button class="icon-button" data-page="sources" aria-label="通知"><span data-ico="bell"></span><i class="notification-dot"></i></button>
+        <div class="top-user"><span class="avatar">林</span><div><strong>运营管理员</strong><small>内容运营组</small></div></div>
+      </div>
+    </header>
+
+    <section class="content" id="content"></section>
+  </main>
+</div>
+
+<template id="tpl-overview">
+  <div class="page-head">
+    <div><div class="eyebrow">TUESDAY · CITY OPERATIONS</div><h1>运营总览</h1><p>查看攻略内容、路线质量与用户行程的最新状态。</p></div>
+    <div class="head-actions"><button class="btn" data-page="sources">＋ 导入攻略</button><button class="btn primary" data-page="routes">查看路线方案 <span>↗</span></button></div>
+  </div>
+  <div class="grid kpis">
+    <article class="card kpi"><div class="kpi-top"><span class="kpi-label">已收录地点</span><span class="kpi-icon" data-ico="pin"></span></div><div class="kpi-value">1,284</div><div class="kpi-foot"><span class="up">↑ 8.6%</span> 较上周</div></article>
+    <article class="card kpi"><div class="kpi-top"><span class="kpi-label">有效攻略线索</span><span class="kpi-icon" data-ico="book"></span></div><div class="kpi-value">3,916</div><div class="kpi-foot"><span class="up">↑ 12.4%</span> 近 7 天新增 428 条</div></article>
+    <article class="card kpi"><div class="kpi-top"><span class="kpi-label">待审核内容</span><span class="kpi-icon" data-ico="inbox"></span></div><div class="kpi-value">12</div><div class="kpi-foot"><span class="down">需处理</span> 来源与地点待确认</div></article>
+    <article class="card kpi"><div class="kpi-top"><span class="kpi-label">本周生成行程</span><span class="kpi-icon" data-ico="route"></span></div><div class="kpi-value">2,608</div><div class="kpi-foot"><span class="up">↑ 16.2%</span> 方案采纳率 74%</div></article>
+  </div>
+  <div class="grid two-col">
+    <article class="card">
+      <div class="card-head"><div><h2>内容收录与行程生成</h2><p>最近 7 天 · 全部示例城市</p></div><button class="more-link" data-page="analytics">查看分析 →</button></div>
+      <div class="chart-area">
+        <div class="chart-legend"><span><i class="legend-dot"></i>攻略线索</span><span><i class="legend-dot orange"></i>生成行程</span></div>
+        <svg class="chart" viewBox="0 0 620 190" preserveAspectRatio="none" role="img" aria-label="近七天内容收录和行程生成趋势">
+          <defs><linearGradient id="fillGreen" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#77ad8c" stop-opacity=".25"/><stop offset="1" stop-color="#77ad8c" stop-opacity="0"/></linearGradient></defs>
+          <path class="chart-grid" d="M42 25H610M42 65H610M42 105H610M42 145H610"/>
+          <text class="chart-text" x="3" y="28">500</text><text class="chart-text" x="8" y="68">350</text><text class="chart-text" x="8" y="108">200</text><text class="chart-text" x="12" y="148">50</text>
+          <path class="chart-area-fill" d="M42 127 C90 115 101 96 137 104 S205 80 231 86 S294 58 326 70 S390 47 420 53 S480 30 516 43 S574 26 610 20 V155H42Z"/>
+          <path class="chart-line" d="M42 127 C90 115 101 96 137 104 S205 80 231 86 S294 58 326 70 S390 47 420 53 S480 30 516 43 S574 26 610 20"/>
+          <path class="chart-line2" d="M42 145 C85 137 105 121 137 128 S199 116 231 122 S294 95 326 111 S390 90 420 97 S483 76 516 84 S574 64 610 72"/>
+          <text class="chart-text" x="38" y="178">周一</text><text class="chart-text" x="130" y="178">周二</text><text class="chart-text" x="222" y="178">周三</text><text class="chart-text" x="314" y="178">周四</text><text class="chart-text" x="406" y="178">周五</text><text class="chart-text" x="498" y="178">周六</text><text class="chart-text" x="585" y="178">周日</text>
+        </svg>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card-head"><div><h2>待处理攻略线索</h2><p>12 条需要审核或补全地点</p></div><button class="more-link" data-page="sources">全部查看 →</button></div>
+      <div class="source-mini-list">
+        <div class="source-mini"><span class="source-thumb">夜</span><span class="source-info"><strong>洪崖洞夜景几点去拍更好？</strong><small>短视频线索 · 18 分钟前</small></span><span class="pill amber">待审核</span></div>
+        <div class="source-mini"><span class="source-thumb" style="background:linear-gradient(145deg,#9b6046,#e8b982)">食</span><span class="source-info"><strong>本地人常去的老火锅清单</strong><small>图文攻略 · 42 分钟前</small></span><span class="pill amber">待匹配</span></div>
+        <div class="source-mini"><span class="source-thumb" style="background:linear-gradient(145deg,#536c7b,#a9c5ba)">路</span><span class="source-info"><strong>解放碑周边半日步行路线</strong><small>链接导入 · 1 小时前</small></span><span class="pill blue">待提取</span></div>
+      </div>
+    </article>
+  </div>
+  <div class="grid two-col">
+    <article class="card">
+      <div class="card-head"><div><h2>热门城市路线表现</h2><p>按行程查看率排序 · 最近 7 天</p></div><button class="more-link" data-page="routes">进入路线方案 →</button></div>
+      <div class="table-card" style="border:0;border-radius:0">
+        <table><thead><tr><th>城市 / 路线</th><th>查看</th><th>采纳率</th><th>路线评分</th><th>状态</th></tr></thead><tbody>
+          <tr><td><span class="row-title"><span class="row-thumb night">夜</span><span><strong>重庆 · 三天两夜经典线</strong><small>夜景 / 街巷 / 本地美食</small></span></span></td><td>6,842</td><td>78%</td><td>92 / 100</td><td><span class="pill green">已发布</span></td></tr>
+          <tr><td><span class="row-title"><span class="row-thumb">慢</span><span><strong>成都 · 慢游与茶馆</strong><small>公园 / 巷子 / 川味</small></span></span></td><td>4,316</td><td>74%</td><td>89 / 100</td><td><span class="pill green">已发布</span></td></tr>
+          <tr><td><span class="row-title"><span class="row-thumb food">食</span><span><strong>杭州 · 西湖周边一日</strong><small>湖景 / 步行 / 江南菜</small></span></span></td><td>3,108</td><td>71%</td><td>87 / 100</td><td><span class="pill amber">需复核</span></td></tr>
+        </tbody></table>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card-head"><div><h2>数据接入状态</h2><p>支撑移动端计划生成的服务</p></div><button class="more-link" data-page="settings">管理服务 →</button></div>
+      <div class="source-mini-list">
+        <div class="source-mini"><span class="kpi-icon" data-ico="map"></span><span class="source-info"><strong>地图路线服务</strong><small>路线规划 · 地点检索</small></span><span class="pill green">正常</span></div>
+        <div class="source-mini"><span class="kpi-icon" data-ico="cloud"></span><span class="source-info"><strong>天气预报服务</strong><small>未来 7 天 · 每日更新</small></span><span class="pill green">正常</span></div>
+        <div class="source-mini"><span class="kpi-icon" data-ico="spark"></span><span class="source-info"><strong>攻略解析任务</strong><small>最近同步 6 分钟前</small></span><span class="pill amber">有 2 条失败</span></div>
+      </div>
+    </article>
+  </div>
+</template>
+
+<template id="tpl-sources">
+  <div class="page-head"><div><div class="eyebrow">CONTENT INTAKE</div><h1>攻略来源审核</h1><p>查看导入线索、抽取地点和时间标签，再决定是否进入地点库。</p></div><div class="head-actions"><button class="btn" data-modal="source">＋ 添加攻略链接</button><button class="btn primary" data-page="places">查看地点库 ↗</button></div></div>
+  <div class="grid kpis" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+    <article class="card kpi"><div class="kpi-label">本周新导入</div><div class="kpi-value">428</div><div class="kpi-foot">图文 / 短视频 / 用户收藏</div></article>
+    <article class="card kpi"><div class="kpi-label">等待人工确认</div><div class="kpi-value">12</div><div class="kpi-foot"><span class="down">5 条</span>地点匹配置信度较低</div></article>
+    <article class="card kpi"><div class="kpi-label">已归档来源</div><div class="kpi-value">3,916</div><div class="kpi-foot"><span class="up">91%</span>已完成去重与地点关联</div></article>
+  </div>
+  <article class="card table-card">
+    <div class="table-toolbar"><div class="toolbar-left"><button class="filter-chip active" data-source-filter="all">全部 <span>24</span></button><button class="filter-chip" data-source-filter="pending">待审核 <span>12</span></button><button class="filter-chip" data-source-filter="matched">已匹配 <span>8</span></button><button class="filter-chip" data-source-filter="rejected">已忽略 <span>4</span></button></div><div class="toolbar-right"><label class="table-search">⌕ <input data-table-search placeholder="搜索标题或地点"></label><button class="btn small" data-modal="source">导入线索</button></div></div>
+    <table><thead><tr><th>攻略线索</th><th>平台 / 作者</th><th>抽取结果</th><th>时段标签</th><th>可信度</th><th>状态</th><th>操作</th></tr></thead>
+    <tbody id="source-rows">
+      <tr data-state="pending"><td><span class="row-title"><span class="row-thumb night">夜</span><span><strong>洪崖洞夜景最佳拍摄时间</strong><small>https://example.com/guide/92718 · 2 小时前</small></span></span></td><td>短视频平台<small style="display:block;color:#9aa59d;margin-top:4px">城市散步家</small></td><td>洪崖洞 · 观景点</td><td><span class="pill blue">夜间</span></td><td>86%</td><td><span class="pill amber state-label">待审核</span></td><td><div class="row-actions"><button data-details="洪崖洞夜景最佳拍摄时间">查看</button><button data-approve>通过</button><button class="danger" data-reject>忽略</button></div></td></tr>
+      <tr data-state="pending"><td><span class="row-title"><span class="row-thumb food">食</span><span><strong>本地人常去的火锅店合集</strong><small>https://example.com/post/hotpot-32 · 4 小时前</small></span></span></td><td>图文平台<small style="display:block;color:#9aa59d;margin-top:4px">山城小分队</small></td><td>火锅店 · 3 个候选</td><td><span class="pill amber">晚餐</span></td><td>72%</td><td><span class="pill amber state-label">待匹配</span></td><td><div class="row-actions"><button data-details="本地人常去的火锅店合集">查看</button><button data-approve>通过</button><button class="danger" data-reject>忽略</button></div></td></tr>
+      <tr data-state="matched"><td><span class="row-title"><span class="row-thumb">路</span><span><strong>解放碑到十八梯步行路线</strong><small>https://example.com/note/walk-118 · 昨天</small></span></span></td><td>用户收藏<small style="display:block;color:#9aa59d;margin-top:4px">匿名用户</small></td><td>步行路线 · 4 个地点</td><td><span class="pill green">白天</span></td><td>94%</td><td><span class="pill green state-label">已匹配</span></td><td><div class="row-actions"><button data-details="解放碑到十八梯步行路线">查看</button><button data-approve>复核</button></div></td></tr>
+      <tr data-state="rejected"><td><span class="row-title"><span class="row-thumb food">辣</span><span><strong>重庆小面避坑清单</strong><small>https://example.com/video/noodles-51 · 2 天前</small></span></span></td><td>短视频平台<small style="display:block;color:#9aa59d;margin-top:4px">吃遍西南</small></td><td>小面 · 2 个候选</td><td><span class="pill amber">早餐 / 午餐</span></td><td>68%</td><td><span class="pill gray state-label">已忽略</span></td><td><div class="row-actions"><button data-details="重庆小面避坑清单">查看</button></div></td></tr>
+    </tbody></table>
+  </article>
+  <div class="grid two-col section-gap">
+    <article class="card"><div class="card-head"><div><h2>线索处理流程</h2><p>从用户收藏到移动端路线推荐</p></div></div><div class="source-mini-list"><div class="source-mini"><span class="kpi-icon">1</span><span class="source-info"><strong>导入链接或文本</strong><small>记录原始来源和发布时间</small></span><span class="pill gray">采集</span></div><div class="source-mini"><span class="kpi-icon">2</span><span class="source-info"><strong>识别地点、时段和体验标签</strong><small>抽取结果可人工修正</small></span><span class="pill blue">解析</span></div><div class="source-mini"><span class="kpi-icon">3</span><span class="source-info"><strong>审核后进入地点与规则库</strong><small>推荐时保留来源溯源信息</small></span><span class="pill green">发布</span></div></div></article>
+    <article class="card"><div class="card-head"><div><h2>平台接入</h2><p>仅展示后台内容入口，需按平台规则接入</p></div><button class="more-link" data-page="settings">服务设置 →</button></div><div class="source-mini-list"><div class="source-mini"><span class="connector-logo">图</span><span class="source-info"><strong>图文攻略线索</strong><small>人工导入 / 用户分享</small></span><span class="pill green">可用</span></div><div class="source-mini"><span class="connector-logo">视</span><span class="source-info"><strong>短视频攻略线索</strong><small>链接解析 / 内容授权</small></span><span class="pill amber">待接入</span></div></div></article>
+  </div>
+</template>
+
+<template id="tpl-places">
+  <div class="page-head"><div><div class="eyebrow">CITY KNOWLEDGE BASE</div><h1>地点与美食库</h1><p>统一维护移动端可用的景点、街区、餐厅和开放时段。</p></div><div class="head-actions"><button class="btn" data-page="routes">查看路线使用情况</button><button class="btn primary" data-modal="place">＋ 新增地点</button></div></div>
+  <div class="grid kpis" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+    <article class="card kpi"><div class="kpi-label">收录地点</div><div class="kpi-value">1,284</div><div class="kpi-foot">景点 812 · 美食 472</div></article>
+    <article class="card kpi"><div class="kpi-label">需更新营业信息</div><div class="kpi-value">37</div><div class="kpi-foot"><span class="down">近 30 天未核对</span></div></article>
+    <article class="card kpi"><div class="kpi-label">来源待补全</div><div class="kpi-value">19</div><div class="kpi-foot">关联攻略少于 2 条</div></article>
+  </div>
+  <article class="card table-card">
+    <div class="table-toolbar"><div class="toolbar-left"><button class="filter-chip active" data-poi-type="all">全部地点</button><button class="filter-chip" data-poi-type="spot">景点 / 街区</button><button class="filter-chip" data-poi-type="food">特色美食</button><button class="filter-chip" data-poi-type="night">夜间体验</button></div><div class="toolbar-right"><label class="table-search">⌕ <input data-table-search placeholder="搜索地点名称"></label><button class="btn small">城市：重庆　⌄</button></div></div>
+    <table><thead><tr><th>地点</th><th>类型</th><th>推荐时段</th><th>路线适配</th><th>关联攻略</th><th>信息状态</th><th>操作</th></tr></thead><tbody>
+      <tr data-poi="spot"><td><span class="row-title"><span class="row-thumb night">夜</span><span><strong>洪崖洞观景区</strong><small>渝中区 · 临江片区</small></span></span></td><td>城市景观</td><td>夜间</td><td><span class="pill green">94 / 100</span></td><td>26 条</td><td><span class="pill green">信息完整</span></td><td><div class="row-actions"><button data-details="洪崖洞观景区">详情</button><button data-modal="place">编辑</button></div></td></tr>
+      <tr data-poi="spot"><td><span class="row-title"><span class="row-thumb">步</span><span><strong>山城步道</strong><small>渝中区 · 通远门一带</small></span></span></td><td>步行街区</td><td>白天 / 傍晚</td><td><span class="pill green">92 / 100</span></td><td>18 条</td><td><span class="pill amber">需核营业</span></td><td><div class="row-actions"><button data-details="山城步道">详情</button><button data-modal="place">编辑</button></div></td></tr>
+      <tr data-poi="food"><td><span class="row-title"><span class="row-thumb food">面</span><span><strong>十八梯周边小面</strong><small>渝中区 · 十八梯片区</small></span></span></td><td>地方美食</td><td>早餐 / 午餐</td><td><span class="pill green">90 / 100</span></td><td>31 条</td><td><span class="pill amber">店铺待确认</span></td><td><div class="row-actions"><button data-details="十八梯周边小面">详情</button><button data-modal="place">编辑</button></div></td></tr>
+      <tr data-poi="food"><td><span class="row-title"><span class="row-thumb food">火</span><span><strong>重庆老火锅</strong><small>多个门店 · 需选择分店</small></span></span></td><td>地方美食</td><td>晚餐</td><td><span class="pill blue">88 / 100</span></td><td>42 条</td><td><span class="pill green">信息完整</span></td><td><div class="row-actions"><button data-details="重庆老火锅">详情</button><button data-modal="place">编辑</button></div></td></tr>
+      <tr data-poi="night"><td><span class="row-title"><span class="row-thumb night">夜</span><span><strong>两江夜景步行线</strong><small>渝中区 · 观景点组合</small></span></span></td><td>夜间路线</td><td>20:00 后</td><td><span class="pill amber">需核人流</span></td><td>14 条</td><td><span class="pill amber">待更新</span></td><td><div class="row-actions"><button data-details="两江夜景步行线">详情</button><button data-modal="place">编辑</button></div></td></tr>
+    </tbody></table>
+  </article>
+</template>
+
+<template id="tpl-routes">
+  <div class="page-head"><div><div class="eyebrow">ITINERARY WORKBENCH</div><h1>路线方案</h1><p>检查行程顺序、昼夜时段、地图距离和天气备选，再发布给移动端。</p></div><div class="head-actions"><button class="btn" data-modal="route">复制为新方案</button><button class="btn primary" data-toast="路线方案已保存为草稿">保存方案</button></div></div>
+  <div class="grid kpis" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+    <article class="card kpi"><div class="kpi-label">方案名称</div><div class="kpi-value" style="font-size:18px">重庆 · 三天两夜</div><div class="kpi-foot">模板 ID：CQ-3D-021</div></article>
+    <article class="card kpi"><div class="kpi-label">方案适配度</div><div class="kpi-value">92<span style="font-size:12px;color:#91a097"> / 100</span></div><div class="kpi-foot">时间、偏好、顺路、天气（演示）</div></article>
+    <article class="card kpi"><div class="kpi-label">发布状态</div><div class="kpi-value" style="font-size:18px">已发布 · v1.8</div><div class="kpi-foot"><span class="up">运行正常</span> 最近更新 09:41</div></article>
+  </div>
+  <div class="route-layout">
+    <article class="card route-panel">
+      <div class="card-head" style="padding:0 0 13px"><div><h2>每日时间线</h2><p>拖动调整顺序 · 点击地点查看配置</p></div><button class="more-link" data-modal="route">＋ 添加地点</button></div>
+      <div class="day-tabs"><button class="active" data-route-day="0">第 1 天 · 抵达</button><button data-route-day="1">第 2 天 · 游玩</button><button data-route-day="2">第 3 天 · 返程</button></div>
+      <div class="route-day-content" id="route-day-content">
+        <div class="stop"><div class="stop-time">18:30</div><div class="stop-line"><i class="stop-dot"></i></div><div class="stop-card" data-details="到达重庆"><strong>抵达重庆 · 住宿地入住</strong><p>以用户酒店位置作为当天起点，晚间不安排跨区远行。</p><div class="stop-meta"><span class="pill gray">起点</span><span class="pill blue">弹性时间</span></div></div></div>
+        <div class="stop food"><div class="stop-time">20:00</div><div class="stop-line"><i class="stop-dot"></i></div><div class="stop-card" data-details="附近特色晚餐"><strong>住处附近特色晚餐</strong><p>依营业时间与当前位置筛选，店铺信息需出发前核实。</p><div class="stop-meta"><span class="pill amber">晚餐</span><span class="pill green">美食</span></div></div></div>
+        <div class="stop"><div class="stop-time">21:15</div><div class="stop-line"><i class="stop-dot"></i></div><div class="stop-card" data-details="城市夜景散步"><strong>轻松夜景散步（可选）</strong><p>晚到且体力允许时安排，结束后优先回到住宿地。</p><div class="stop-meta"><span class="pill blue">夜间</span><span class="pill gray">可跳过</span></div></div></div>
+      </div>
+      <div class="route-tip">路线内容为交互原型示例。正式方案需按真实坐标、营业时间、天气和交通耗时计算。</div>
+    </article>
+    <article class="card route-panel">
+      <div class="card-head" style="padding:0 0 13px"><div><h2>路线地图 · 行程内嵌</h2><p>地图点位与左侧当天时间线对应</p></div><div class="segmented"><button class="active" data-route-view="full">地图</button><button data-route-view="compact">简洁</button></div></div>
+      <div class="map-card" id="route-map">
+        <svg class="map-svg" viewBox="0 0 620 460" preserveAspectRatio="none" aria-label="路线地图示意">
+          <rect width="620" height="460" fill="#e9efe7"/>
+          <path d="M-10 70 650 120M-20 195 640 224M-15 315 650 275M70-15 95 490M235-15 210 490M410-15 425 490M565-15 535 490" stroke="#d2ddd1" stroke-width="18" fill="none"/>
+          <path d="M-10 70 650 120M-20 195 640 224M-15 315 650 275M70-15 95 490M235-15 210 490M410-15 425 490M565-15 535 490" stroke="#fff" stroke-width="10" fill="none"/>
+          <path d="M-20 405 C105 376 115 316 198 303 S285 243 338 217 400 159 464 143 526 108 640 48" stroke="#b8d8cc" stroke-width="39" fill="none"/>
+          <path d="M-20 405 C105 376 115 316 198 303 S285 243 338 217 400 159 464 143 526 108 640 48" stroke="#d9ebe0" stroke-width="26" fill="none"/>
+          <path d="M50 105c45-30 83-9 75 35s-60 45-89 12-18-25 14-47ZM470 293c44-32 91-13 88 27s-63 48-95 16-22-30 7-43Z" fill="#cfe2ca"/>
+          <text x="24" y="165" fill="#91a194" font-size="12">山城步道</text><text x="446" y="339" fill="#91a194" font-size="12">江岸公园</text><text x="256" y="83" fill="#91a194" font-size="12">解放碑商圈</text>
+          <path d="M95 335 L217 269 L349 207 L472 138" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M95 335 L217 269 L349 207 L472 138" stroke="#32755c" stroke-width="4" fill="none" stroke-dasharray="7 8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="map-badge">⌁　从住宿地出发　·　示意路线</div>
+        <div class="map-key"><span><i class="key-dot"></i>景点 / 街区</span><span><i class="key-dot orange"></i>特色美食</span></div>
+        <button class="map-marker m1" data-details="住宿地">⌂</button><button class="map-marker m2" data-details="山城步道">1</button><button class="map-marker food m3" data-details="特色午餐">2</button><button class="map-marker m4" data-details="洪崖洞夜景">3</button>
+        <div class="map-caption">点地图标记可查看地点；地图和坐标为设计示意</div>
+      </div>
+    </article>
+  </div>
+</template>
+
+<template id="tpl-rules">
+  <div class="page-head"><div><div class="eyebrow">RECOMMENDATION POLICY</div><h1>AI 推荐规则</h1><p>设置路线排序的权重与时间约束，明确每项推荐理由。</p></div><div class="head-actions"><button class="btn" data-toast="已还原上次保存的规则">还原版本</button><button class="btn primary" data-save-rules>保存规则</button></div></div>
+  <div class="grid two-col">
+    <article class="card">
+      <div class="card-head"><div><h2>路线适配度权重</h2><p>总和建议为 100%，供候选路线排序使用</p></div><span class="pill green" id="weight-total">总计 100%</span></div>
+      <div class="score-grid">
+        <div class="score-row"><div class="score-row-top"><strong>时段与营业匹配</strong><output>30%</output></div><small>按白天 / 夜间偏好与开放时段过滤</small><input type="range" min="0" max="60" value="30" data-weight></div>
+        <div class="score-row"><div class="score-row-top"><strong>路线顺路程度</strong><output>25%</output></div><small>减少跨区移动与重复折返</small><input type="range" min="0" max="60" value="25" data-weight></div>
+        <div class="score-row"><div class="score-row-top"><strong>用户兴趣偏好</strong><output>20%</output></div><small>匹配美食、人文、夜游和慢行等偏好</small><input type="range" min="0" max="60" value="20" data-weight></div>
+        <div class="score-row"><div class="score-row-top"><strong>天气适配</strong><output>15%</output></div><small>雨天优先室内备选，保留可执行方案</small><input type="range" min="0" max="60" value="15" data-weight></div>
+        <div class="score-row"><div class="score-row-top"><strong>攻略来源可信度</strong><output>10%</output></div><small>综合近期性、来源质量和多来源一致性</small><input type="range" min="0" max="60" value="10" data-weight></div>
+        <div class="score-row" style="display:grid;place-items:center;background:#f6f8f4"><strong style="color:#4d8060">变化即时预览</strong><small>权重影响排序，不直接替代事实核验</small></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card-head"><div><h2>时段与安全约束</h2><p>硬性规则优先于综合评分</p></div></div>
+      <div style="padding:9px 18px 15px">
+        <label class="toggle-row"><input class="toggle" type="checkbox" checked><span><strong>夜景类地点仅安排在夜间</strong><small>并检查回住宿地的返程路线</small></span></label>
+        <label class="toggle-row"><input class="toggle" type="checkbox" checked><span><strong>户外步行优先安排白天</strong><small>恶劣天气时显示室内替代候选</small></span></label>
+        <label class="toggle-row"><input class="toggle" type="checkbox" checked><span><strong>用餐地点需匹配营业时段</strong><small>营业信息过期时降低推荐置信度</small></span></label>
+        <label class="toggle-row"><input class="toggle" type="checkbox" checked><span><strong>返程日前保留交通缓冲</strong><small>不将远距离景点放在离开当天</small></span></label>
+        <label class="toggle-row"><input class="toggle" type="checkbox"><span><strong>高人流地点限制连续安排</strong><small>避免连续长时间排队和拥挤</small></span></label>
+      </div>
+    </article>
+  </div>
+  <article class="card section-gap"><div class="card-head"><div><h2>推荐理由模板</h2><p>移动端地点详情页会展示这些可解释的判断</p></div><button class="more-link" data-page="places">管理地点数据 →</button></div><div class="source-mini-list"><div class="source-mini"><span class="kpi-icon">时</span><span class="source-info"><strong>“安排在夜间，因为你选择了城市夜景，且该地点在晚间更适合游览。”</strong><small>时段匹配 · 输出原因和适用信息</small></span></div><div class="source-mini"><span class="kpi-icon">路</span><span class="source-info"><strong>“与上一站同片区，预计少一次跨区折返。”</strong><small>路线顺路 · 依据地图服务计算</small></span></div><div class="source-mini"><span class="kpi-icon">雨</span><span class="source-info"><strong>“出行日有降雨可能，提供附近室内地点作为备选。”</strong><small>天气适配 · 展示预报更新时间</small></span></div></div></article>
+</template>
+
+<template id="tpl-trips">
+  <div class="page-head"><div><div class="eyebrow">TRAVELER ACTIVITY</div><h1>用户行程</h1><p>查看行程生成、用户采纳与反馈，定位路线数据问题。</p></div><div class="head-actions"><button class="btn" data-toast="已导出当前筛选结果">导出列表 ↓</button></div></div>
+  <div class="grid kpis" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+    <article class="card kpi"><div class="kpi-label">今日新建行程</div><div class="kpi-value">386</div><div class="kpi-foot"><span class="up">↑ 11%</span> 较昨日</div></article>
+    <article class="card kpi"><div class="kpi-label">用户手动调整率</div><div class="kpi-value">31%</div><div class="kpi-foot">调整集中在交通与用餐时长</div></article>
+    <article class="card kpi"><div class="kpi-label">行程完成反馈</div><div class="kpi-value">4.6<span style="font-size:12px"> / 5</span></div><div class="kpi-foot">最近 7 天 · 示例数据</div></article>
+  </div>
+  <article class="card table-card">
+    <div class="table-toolbar"><div class="toolbar-left"><button class="filter-chip active" data-trip-filter="all">全部行程</button><button class="filter-chip" data-trip-filter="upcoming">即将出发</button><button class="filter-chip" data-trip-filter="active">进行中</button><button class="filter-chip" data-trip-filter="done">已完成</button></div><label class="table-search">⌕ <input data-table-search placeholder="搜索行程编号或用户"></label></div>
+    <table><thead><tr><th>用户 / 行程</th><th>目的地</th><th>出行日期</th><th>地点数</th><th>地图 / 天气</th><th>状态</th><th>操作</th></tr></thead><tbody>
+      <tr data-trip-state="upcoming"><td><span class="row-title"><span class="avatar">陈</span><span><strong>陈同学 · TR-2026-0941</strong><small>2 人 · 慢节奏 · 偏好夜景和美食</small></span></span></td><td>重庆</td><td>10/01—10/03</td><td>8 站</td><td><span class="pill green">已规划</span></td><td><span class="pill blue">即将出发</span></td><td><div class="row-actions"><button data-details="TR-2026-0941">查看</button></div></td></tr>
+      <tr data-trip-state="upcoming"><td><span class="row-title"><span class="avatar">周</span><span><strong>周女士 · TR-2026-0940</strong><small>3 人 · 均衡节奏 · 有儿童</small></span></span></td><td>成都</td><td>09/28—09/30</td><td>10 站</td><td><span class="pill amber">天气待更新</span></td><td><span class="pill blue">即将出发</span></td><td><div class="row-actions"><button data-details="TR-2026-0940">查看</button></div></td></tr>
+      <tr data-trip-state="active"><td><span class="row-title"><span class="avatar">李</span><span><strong>李先生 · TR-2026-0938</strong><small>1 人 · 紧凑节奏 · 公共交通</small></span></span></td><td>杭州</td><td>09/23—09/25</td><td>6 站</td><td><span class="pill green">路线正常</span></td><td><span class="pill green">进行中</span></td><td><div class="row-actions"><button data-details="TR-2026-0938">查看</button></div></td></tr>
+      <tr data-trip-state="done"><td><span class="row-title"><span class="avatar">赵</span><span><strong>赵同学 · TR-2026-0921</strong><small>2 人 · 美食优先 · 手动调整 2 站</small></span></span></td><td>重庆</td><td>09/18—09/20</td><td>9 站</td><td><span class="pill gray">已归档</span></td><td><span class="pill gray">已完成</span></td><td><div class="row-actions"><button data-details="TR-2026-0921">查看</button></div></td></tr>
+    </tbody></table>
+  </article>
+</template>
+
+<template id="tpl-analytics">
+  <div class="page-head"><div><div class="eyebrow">PRODUCT INSIGHTS</div><h1>数据分析</h1><p>通过用户行为反馈持续校验攻略质量与路线规则。</p></div><div class="head-actions"><select class="select-city"><option>最近 7 天</option><option>最近 30 天</option></select><button class="btn" data-toast="图表数据已导出">导出报表 ↓</button></div></div>
+  <div class="grid kpis">
+    <article class="card kpi"><div class="kpi-label">路线曝光</div><div class="kpi-value">42.8k</div><div class="kpi-foot"><span class="up">↑ 14.3%</span> 环比上周</div></article>
+    <article class="card kpi"><div class="kpi-label">行程采纳</div><div class="kpi-value">74.2%</div><div class="kpi-foot"><span class="up">↑ 3.1%</span> 生成后未大幅修改</div></article>
+    <article class="card kpi"><div class="kpi-label">地点详情点击</div><div class="kpi-value">18.6k</div><div class="kpi-foot">美食详情占 42%</div></article>
+    <article class="card kpi"><div class="kpi-label">用户反馈满意度</div><div class="kpi-value">4.6 / 5</div><div class="kpi-foot">基于已完成行程反馈</div></article>
+  </div>
+  <div class="grid two-col">
+    <article class="card"><div class="card-head"><div><h2>行程创建趋势</h2><p>每日生成量 · 示例统计</p></div><span class="pill green">近 7 天</span></div><div class="chart-area"><div class="chart-legend"><span><i class="legend-dot"></i>创建数</span></div><div class="barset"><div class="barcol"><i class="bar" style="height:42%"></i><small>周一</small></div><div class="barcol"><i class="bar" style="height:58%"></i><small>周二</small></div><div class="barcol"><i class="bar" style="height:48%"></i><small>周三</small></div><div class="barcol"><i class="bar" style="height:72%"></i><small>周四</small></div><div class="barcol"><i class="bar" style="height:67%"></i><small>周五</small></div><div class="barcol"><i class="bar active" style="height:93%"></i><small>周六</small></div><div class="barcol"><i class="bar" style="height:78%"></i><small>周日</small></div></div></div></article>
+    <article class="card"><div class="card-head"><div><h2>高频调整原因</h2><p>用户修改生成路线的常见原因</p></div></div><div class="source-mini-list"><div class="source-mini"><span class="kpi-icon">交</span><span class="source-info"><strong>交通距离或换乘太多</strong><small>占调整反馈的 34%</small></span><span class="pill amber">优先优化</span></div><div class="source-mini"><span class="kpi-icon">时</span><span class="source-info"><strong>用餐时段与店铺营业不符</strong><small>占调整反馈的 26%</small></span><span class="pill blue">补数据</span></div><div class="source-mini"><span class="kpi-icon">雨</span><span class="source-info"><strong>天气变化缺少合适备选</strong><small>占调整反馈的 18%</small></span><span class="pill gray">规则调整</span></div></div><div class="insight-box"><strong>运营建议</strong><p>先复核交通时间异常、营业信息过期和天气备选不足的路线，再观察采纳率变化。</p></div></article>
+  </div>
+  <article class="card section-gap"><div class="card-head"><div><h2>地点类型表现</h2><p>详情查看率与收藏率 · 示例数据</p></div></div><div class="table-card" style="border:0"><table><thead><tr><th>地点类型</th><th>详情查看</th><th>加入行程</th><th>收藏率</th><th>优化建议</th></tr></thead><tbody><tr><td>夜景观景</td><td>6,432</td><td>3,184</td><td>31%</td><td>补充观景时间与人流信息</td></tr><tr><td>地方美食</td><td>7,812</td><td>4,901</td><td>38%</td><td>增加分店、排队与营业数据</td></tr><tr><td>城市步行</td><td>2,977</td><td>1,202</td><td>19%</td><td>校验坡度、路程和雨天可行性</td></tr></tbody></table></div></article>
+</template>
+
+<template id="tpl-settings">
+  <div class="page-head"><div><div class="eyebrow">INTEGRATIONS & ACCESS</div><h1>服务与设置</h1><p>管理地图、天气、内容处理与账号权限；密钥仅保存在服务端。</p></div><div class="head-actions"><button class="btn primary" data-toast="设置已保存">保存设置</button></div></div>
+  <div class="source-connectors">
+    <article class="card connector"><div class="connector-head"><span class="connector-logo">⌖</span><div><h3>地图与地点服务</h3><span class="pill green">已连接 · 演示</span></div></div><p>用于地址检索、步行 / 公交路线、预计耗时和地图渲染。真实项目需要配置服务端密钥与调用额度。</p><button class="btn" data-modal="service">配置地图服务</button></article>
+    <article class="card connector"><div class="connector-head"><span class="connector-logo">☁</span><div><h3>天气预报服务</h3><span class="pill green">已连接 · 演示</span></div></div><p>提供出行日期天气、降雨时段和天气变化提醒，驱动室内备选与路线重排。</p><button class="btn" data-modal="service">配置天气服务</button></article>
+    <article class="card connector"><div class="connector-head"><span class="connector-logo">✦</span><div><h3>AI 内容解析</h3><span class="pill amber">待配置密钥</span></div></div><p>将用户授权提供的链接或文本整理为地点、标签、时段和引用来源，不展示未经核验的事实。</p><button class="btn" data-modal="service">配置 AI 服务</button></article>
+  </div>
+  <div class="grid settings-grid section-gap">
+    <article class="card"><div class="card-head"><div><h2>数据更新任务</h2><p>运行状态和最近同步时间</p></div><button class="more-link" data-toast="任务队列已刷新">刷新任务</button></div><div class="settings-item"><span class="state pill green">正常</span><strong>天气预报更新</strong><small>每 6 小时 · 最近运行 09:32</small></div><div class="settings-item"><span class="state pill amber">2 条失败</span><strong>攻略来源解析</strong><small>每 10 分钟 · 最近运行 09:41</small></div><div class="settings-item"><span class="state pill green">正常</span><strong>地点营业信息复核提醒</strong><small>每日 08:00 · 最近运行 08:00</small></div></article>
+    <article class="card"><div class="card-head"><div><h2>管理员权限</h2><p>当前工作空间的角色</p></div><button class="more-link" data-toast="权限页面暂为演示">管理成员 →</button></div><div class="settings-item"><span class="state pill green">当前账号</span><strong>运营管理员</strong><small>审核攻略、维护地点与路线规则</small></div><div class="settings-item"><span class="state pill gray">只读</span><strong>数据分析员</strong><small>查看指标与反馈，不可编辑推荐配置</small></div></article>
+  </div>
+</template>
+
+<div class="modal-backdrop" id="modal-backdrop" role="presentation">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <header class="modal-head"><h2 id="modal-title">新增内容</h2><button data-close-modal aria-label="关闭">×</button></header>
+    <form id="modal-form">
+      <div class="modal-body" id="modal-body"></div>
+      <footer class="modal-foot"><button class="btn" type="button" data-close-modal>取消</button><button class="btn primary" type="submit">保存草稿</button></footer>
+    </form>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+var TITLES={overview:["运营总览","工作台"],trips:["用户行程","工作台"],sources:["攻略来源审核","内容运营"],places:["地点与美食库","内容运营"],routes:["路线方案","内容运营"],rules:["AI 推荐规则","内容运营"],analytics:["数据分析","数据分析"],settings:["服务与设置","系统"]};
+var ICONS={
+grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+calendar:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4m8-4v4M3 10h18"/>',
+inbox:'<path d="M4 4h16v15H4z"/><path d="M4 13h4l2 3h4l2-3h4"/>',
+pin:'<path d="M12 21s7-6.3 7-12a7 7 0 1 0-14 0c0 5.7 7 12 7 12Z"/><circle cx="12" cy="9" r="2.3"/>',
+route:'<path d="M3 18h3a3 3 0 0 0 3-3V9a3 3 0 0 1 3-3h5"/><path d="m14 3 4 3-4 3"/><circle cx="3" cy="18" r="1"/><circle cx="20" cy="18" r="1"/>',
+sliders:'<path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2"/><circle cx="16" cy="17" r="2"/>',
+chart:'<path d="M4 19V5m0 14h17"/><path d="m7 15 4-5 3 2 6-7"/>',
+settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.8 1.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.2h-2.6v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1-1.8-1.8.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H6v-2.6h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.8-1.8.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5V5h2.6v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.8 1.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2v2.6h-.2a1.7 1.7 0 0 0-1.5 1Z"/>',
+search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/>',
+bell:'<path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/>',
+book:'<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21z"/><path d="M4 5.5V21M8 7h8M8 11h8"/>',
+map:'<path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3Z"/><path d="M9 3v15m6-12v15"/>',
+cloud:'<path d="M7 18a5 5 0 1 1 .8-9.9A6 6 0 0 1 19 10a4 4 0 0 1-1 8Z"/>',
+spark:'<path d="m12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5Z"/>'
+};
+function fillIcons(root){root.querySelectorAll("[data-ico]").forEach(function(el){var path=ICONS[el.getAttribute("data-ico")];if(path)el.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+path+'</svg>'})}
+function toast(message){var el=document.getElementById("toast");el.textContent=message;el.classList.add("show");clearTimeout(window._toastTimer);window._toastTimer=setTimeout(function(){el.classList.remove("show")},2400)}
+function setPage(page){
+  var tpl=document.getElementById("tpl-"+page);if(!tpl)return;
+  document.getElementById("content").innerHTML=tpl.innerHTML;
+  document.querySelectorAll(".nav [data-page]").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-page")===page)});
+  document.getElementById("page-title").textContent=TITLES[page][0];
+  document.getElementById("crumb-group").textContent=TITLES[page][1];
+  document.getElementById("content").scrollTop=0;
+  fillIcons(document);
+  if(document.getElementById("sidebar").classList.contains("open"))document.getElementById("sidebar").classList.remove("open");
+}
+var MODAL_FIELDS={
+source:'<div class="form-grid"><div class="field full"><label>攻略链接或原文</label><textarea required placeholder="粘贴用户授权分享的链接，或直接录入文字"></textarea></div><div class="field"><label>来源类型</label><select><option>用户分享</option><option>图文攻略</option><option>短视频攻略</option></select></div><div class="field"><label>关联城市</label><select><option>重庆</option><option>成都</option><option>杭州</option></select></div><div class="field full"><label>运营备注</label><input placeholder="选填：导入人、需要复核的内容"></div></div>',
+place:'<div class="form-grid"><div class="field"><label>地点名称</label><input required placeholder="例如：洪崖洞观景区"></div><div class="field"><label>地点类型</label><select><option>景点 / 街区</option><option>特色美食</option><option>夜间体验</option></select></div><div class="field"><label>推荐时段</label><select><option>白天</option><option>午餐</option><option>晚餐</option><option>夜间</option><option>全天</option></select></div><div class="field"><label>城市</label><select><option>重庆</option><option>成都</option><option>杭州</option></select></div><div class="field full"><label>推荐说明</label><textarea placeholder="填写来源依据、游览建议和需要核验的信息"></textarea></div></div>',
+route:'<div class="form-grid"><div class="field full"><label>路线名称</label><input required placeholder="例如：重庆 · 三天两夜经典线"></div><div class="field"><label>城市</label><select><option>重庆</option><option>成都</option></select></div><div class="field"><label>行程天数</label><select><option>3 天 2 夜</option><option>2 天 1 夜</option><option>1 日游</option></select></div><div class="field full"><label>适合人群 / 标签</label><input placeholder="慢节奏、夜景、美食"></div></div>',
+service:'<div class="form-grid"><div class="field full"><label>服务类型</label><select><option>地图与路线服务</option><option>天气预报服务</option><option>AI 内容解析</option></select></div><div class="field full"><label>服务端配置名称</label><input placeholder="例如 MAP_PROVIDER_KEY" autocomplete="off"></div><div class="field full"><label>状态说明</label><textarea placeholder="密钥应保存在服务端环境变量或密钥管理服务中；本原型不会提交真实密钥。"></textarea></div></div>'
+};
+function openModal(kind,title){
+  var backdrop=document.getElementById("modal-backdrop");
+  document.getElementById("modal-title").textContent=title||({source:"导入攻略线索",place:"新增地点",route:"新建路线方案",service:"配置服务"}[kind]||"新增内容");
+  document.getElementById("modal-body").innerHTML=MODAL_FIELDS[kind]||MODAL_FIELDS.source;
+  backdrop.classList.add("open");
+  var first=backdrop.querySelector("input,textarea,select");if(first)setTimeout(function(){first.focus()},50);
+}
+function closeModal(){document.getElementById("modal-backdrop").classList.remove("open")}
+function filterRows(selector,attribute,value){
+  document.querySelectorAll(selector).forEach(function(row){
+    var match=value==="all"||row.getAttribute(attribute)===value;
+    row.style.display=match?"":"none";
+  });
+}
+function updateWeights(root){
+  var inputs=[].slice.call(root.querySelectorAll("[data-weight]"));
+  var total=inputs.reduce(function(sum,input){var n=Number(input.value);input.closest(".score-row").querySelector("output").textContent=n+"%";return sum+n},0);
+  var out=root.querySelector("#weight-total");if(out){out.textContent="总计 "+total+"%";out.className="pill "+(total===100?"green":"amber")}
+}
+function renderRouteDay(day){
+  var data=[
+    [['18:30','抵达重庆 · 住宿地入住','以用户酒店位置作为当天起点，晚间不安排跨区远行。','起点','弹性时间'],['20:00','住处附近特色晚餐','依营业时间与当前位置筛选，店铺信息需出发前核实。','晚餐','美食'],['21:15','轻松夜景散步（可选）','晚到且体力允许时安排，结束后优先回到住宿地。','夜间','可跳过']],
+    [['09:00','从住宿地出发','以用户住宿位置作为当天路线起点。','起点','步行 / 地铁'],['09:40','山城步道','白天步行体验，按天气、坡度和体力建议停留。','白天','城市漫步'],['12:10','十八梯附近小面','午餐放在上午游览片区，减少跨区移动。','午餐','特色美食'],['15:30','戴家巷街巷漫步','傍晚前结束户外活动，雨天可换室内候选。','下午','雨天可替换'],['19:30','洪崖洞夜景','安排在晚餐后，路线需包含返回住处的交通。','夜间','夜景']],
+    [['09:00','住处附近早餐','选择营业较早的店，退房和返程前留出缓冲。','早餐','不赶时间'],['10:30','附近自由活动','只保留轻量安排，避免返程日跨区游览。','弹性','可跳过'],['14:00','前往车站 / 机场','交通方式和时刻按用户实际行程确认。','返程','预留缓冲']]
+  ];
+  var wrap=document.getElementById("route-day-content");if(!wrap)return;
+  wrap.innerHTML=data[day].map(function(x,i){var food=x[4].indexOf("美食")>=0||x[3].indexOf("餐")>=0;return '<div class="stop '+(food?'food':'')+'"><div class="stop-time">'+x[0]+'</div><div class="stop-line"><i class="stop-dot"></i></div><div class="stop-card" data-details="'+x[1]+'"><strong>'+x[1]+'</strong><p>'+x[2]+'</p><div class="stop-meta"><span class="pill '+(food?'amber':'gray')+'">'+x[3]+'</span><span class="pill blue">'+x[4]+'</span></div></div></div>'}).join("");
+  toast("已切换到第 "+(Number(day)+1)+" 天的路线");
+}
+document.addEventListener("click",function(e){
+  var page=e.target.closest("[data-page]");if(page){setPage(page.getAttribute("data-page"));return}
+  var m=e.target.closest("[data-modal]");if(m){openModal(m.getAttribute("data-modal"),m.getAttribute("data-title"));return}
+  if(e.target.closest("[data-close-modal]")){closeModal();return}
+  if(e.target.id==="modal-backdrop"){closeModal();return}
+  var approve=e.target.closest("[data-approve]");if(approve){var row=approve.closest("tr");row.setAttribute("data-state","matched");var label=row.querySelector(".state-label");label.textContent="已匹配";label.className="pill green state-label";toast("已通过审核，线索进入地点关联");return}
+  var reject=e.target.closest("[data-reject]");if(reject){var r=reject.closest("tr");r.setAttribute("data-state","rejected");var l=r.querySelector(".state-label");l.textContent="已忽略";l.className="pill gray state-label";toast("已忽略该条攻略线索");return}
+  var sf=e.target.closest("[data-source-filter]");if(sf){document.querySelectorAll("[data-source-filter]").forEach(function(b){b.classList.toggle("active",b===sf)});filterRows("#source-rows tr","data-state",sf.getAttribute("data-source-filter"));return}
+  var pf=e.target.closest("[data-poi-type]");if(pf){document.querySelectorAll("[data-poi-type]").forEach(function(b){b.classList.toggle("active",b===pf)});filterRows("#content tbody tr[data-poi]","data-poi",pf.getAttribute("data-poi-type"));return}
+  var tf=e.target.closest("[data-trip-filter]");if(tf){document.querySelectorAll("[data-trip-filter]").forEach(function(b){b.classList.toggle("active",b===tf)});filterRows("#content tbody tr[data-trip-state]","data-trip-state",tf.getAttribute("data-trip-filter"));return}
+  var rd=e.target.closest("[data-route-day]");if(rd){document.querySelectorAll("[data-route-day]").forEach(function(b){b.classList.toggle("active",b===rd)});renderRouteDay(rd.getAttribute("data-route-day"));return}
+  var rv=e.target.closest("[data-route-view]");if(rv){document.querySelectorAll("[data-route-view]").forEach(function(b){b.classList.toggle("active",b===rv)});var map=document.getElementById("route-map");map.style.minHeight=rv.getAttribute("data-route-view")==="compact"?"300px":"465px";toast(rv.getAttribute("data-route-view")==="compact"?"已切换简洁地图":"已切换完整地图");return}
+  var details=e.target.closest("[data-details]");if(details){openModal("source",details.getAttribute("data-details"));document.getElementById("modal-body").innerHTML='<div class="source-box"><strong>'+details.getAttribute("data-details")+'</strong><p>推荐依据：结合用户时间、住宿起点、昼夜属性、天气适配和路线距离。示例页面不展示真实平台内容。</p><div class="source-list"><div class="source-item"><b>内容摘要</b><span>人工审核后保存原始链接、发布时间和地点匹配结果。</span></div><div class="source-item"><b>运营提醒</b><span>请核实营业信息、地点坐标与原文更新时间。</span></div></div></div>';return}
+  var save=e.target.closest("[data-save-rules]");if(save){var total=document.getElementById("weight-total");if(total&&total.textContent!=="总计 100%"){toast("权重总和需为 100% 后再保存");return}toast("AI 推荐规则已保存");return}
+  var action=e.target.closest("[data-toast]");if(action){toast(action.getAttribute("data-toast"));return}
+});
+document.addEventListener("input",function(e){
+  if(e.target.matches("[data-weight]"))updateWeights(document.getElementById("content"));
+  if(e.target.matches("[data-table-search]")){var q=e.target.value.toLowerCase();document.querySelectorAll("#content tbody tr").forEach(function(row){row.style.display=row.textContent.toLowerCase().indexOf(q)>=0?"":"none"})}
+});
+document.addEventListener("submit",function(e){if(e.target.id==="modal-form"){e.preventDefault();closeModal();toast("已保存草稿；正式版将进入审核或配置流程")}})
+document.getElementById("mobile-menu").addEventListener("click",function(){document.getElementById("sidebar").classList.toggle("open")});
+document.getElementById("city-filter").addEventListener("change",function(e){toast("已切换城市筛选："+e.target.value)});
+document.getElementById("global-search").addEventListener("keydown",function(e){if(e.key==="Enter"){var q=e.target.value.trim();if(q){setPage("places");var input=document.querySelector("#content [data-table-search]");if(input){input.value=q;input.dispatchEvent(new Event("input",{bubbles:true}))}else toast("搜索："+q)}}});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeModal()});
+setPage("overview");
+</script>
+</body>
+</html>

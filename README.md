@@ -117,7 +117,7 @@
 | 移动端 | React Native + Expo + TypeScript |
 | Web 管理端 | React + Vite + TypeScript + shadcn/ui |
 | 后端 API | Hono + TypeScript + Zod |
-| 数据库与 ORM | PostgreSQL + Prisma |
+| 数据库与 ORM | MySQL 8.0+ + Prisma |
 | 仓库与包管理 | pnpm workspace |
 | 本地依赖 | Docker Compose |
 | 外部能力 | 地图/地理编码、路线、天气和大模型适配层 |
@@ -140,19 +140,20 @@ apps/
 packages/
   contracts/    # 共享 DTO、Zod Schema、API 类型
   database/     # Prisma Schema、迁移与 seed
-compose.yaml    # 本地 PostgreSQL
+compose.yaml    # 本地 MySQL
 .env.example
 pnpm-workspace.yaml
 README.md
 ```
 
-当前仓库尚未按上述结构初始化，现有文件如下：
+当前仓库已按文档目录先整理产品资料；应用代码目录将在工程初始化阶段创建。现有资料如下：
 
 | 文件 | 用途 |
 | --- | --- |
-| [城市旅行智能攻略与动态行程规划产品计划书(2).md](./城市旅行智能攻略与动态行程规划产品计划书(2).md) | 产品方向、MVP、技术方案和开发安排 |
-| [路书_V3_AI旅行攻略App高保真交互原型.html](./路书_V3_AI旅行攻略App高保真交互原型.html) | 移动端页面与点击流程原型 |
-| [路书_Web后台管理端_可点击原型.html](./路书_Web后台管理端_可点击原型.html) | Web 管理后台页面与运营流程原型 |
+| [产品计划书](./docs/product/product-plan.md) | 产品方向、MVP、技术方案和开发安排 |
+| [项目架构与并行开发任务书](./docs/architecture/project-architecture-and-parallel-development.md) | 目录结构、并行开发任务、依赖和验收标准 |
+| [移动端高保真交互原型](./docs/prototypes/mobile-prototype.html) | 移动端页面与点击流程原型 |
+| [Web 管理后台可点击原型](./docs/prototypes/admin-prototype.html) | Web 管理后台页面与运营流程原型 |
 
 原型中的地点、天气和地图底图属于演示数据，不代表真实服务已经接入。
 
@@ -210,6 +211,7 @@ pnpm dev
 
 ## 项目资料
 
-- [产品计划书](./城市旅行智能攻略与动态行程规划产品计划书(2).md)
-- [移动端高保真交互原型](./路书_V3_AI旅行攻略App高保真交互原型.html)
-- [Web 管理后台可点击原型](./路书_Web后台管理端_可点击原型.html)
+- [产品计划书](./docs/product/product-plan.md)
+- [项目架构与并行开发任务书](./docs/architecture/project-architecture-and-parallel-development.md)
+- [移动端高保真交互原型](./docs/prototypes/mobile-prototype.html)
+- [Web 管理后台可点击原型](./docs/prototypes/admin-prototype.html)
