@@ -215,3 +215,20 @@ pnpm dev
 - [项目架构与并行开发任务书](./docs/architecture/project-architecture-and-parallel-development.md)
 - [移动端高保真交互原型](./docs/prototypes/mobile-prototype.html)
 - [Web 管理后台可点击原型](./docs/prototypes/admin-prototype.html)
+## 阶段 0 工程检查
+
+当前分支已建立 pnpm Monorepo 工程基线。环境要求为 Node.js 24 LTS 和 pnpm 11.19.0。
+
+```powershell
+pnpm install
+Copy-Item .env.example .env
+pnpm format:check
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+```
+
+开发环境的完整准备说明见 [`docs/architecture/development-environment-setup.md`](docs/architecture/development-environment-setup.md)。
+
+GitHub Actions 工作流位于 `.github/workflows/ci.yml`，会使用锁文件安装依赖，并执行格式、Lint、类型、测试和构建检查。

@@ -1,0 +1,33 @@
+{
+  "name": "trailbook",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.19.0",
+  "engines": {
+    "node": ">=24 <25",
+    "pnpm": ">=11 <12"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --if-present dev",
+    "build": "pnpm -r --if-present build",
+    "format": "prettier --write \"*.{json,yml,yaml}\" \".github/**/*.{yml,yaml}\" \"apps/**/*.{ts,tsx,json}\" \"packages/**/*.{ts,tsx,json}\" \"scripts/**/*.{ts,mjs,json}\" \"tests/**/*.{ts,tsx,json}\"",
+    "format:check": "prettier --check \"*.{json,yml,yaml}\" \".github/**/*.{yml,yaml}\" \"apps/**/*.{ts,tsx,json}\" \"packages/**/*.{ts,tsx,json}\" \"scripts/**/*.{ts,mjs,json}\" \"tests/**/*.{ts,tsx,json}\"",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepare": "node scripts/check-workspace.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.35.0",
+    "@types/node": "^24.5.2",
+    "eslint": "^9.35.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.4.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.43.0",
+    "vitest": "^3.2.4"
+  }
+}
