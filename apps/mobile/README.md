@@ -14,7 +14,7 @@ pnpm --filter @trailbook/mobile build
 
 ## 后续 Expo 初始化要求
 
-- 使用项目锁定的 Node.js 24 和 pnpm 11.19.0。
+- 使用项目锁定的 Node.js 24.21.0 和 pnpm 11.28.0。
 - 由客户端初始化任务确定 Expo SDK、React Native、TypeScript 和导航依赖的兼容版本，并提交到 workspace 的 `package.json` 和锁文件。
 - 优先使用项目本地 Expo CLI，通过 `pnpm exec expo` 执行，不安装全局旧版 CLI。
 - 初始化后至少提供 `dev`/`start`、`android` 和 `build` 的明确脚本，并在根目录命令中保持可发现。
