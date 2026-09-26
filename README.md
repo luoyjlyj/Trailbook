@@ -217,7 +217,7 @@ pnpm dev
 - [Web 管理后台可点击原型](./docs/prototypes/admin-prototype.html)
 ## 阶段 0 工程检查
 
-当前分支已建立 pnpm Monorepo 工程基线。环境要求为 Node.js 24 LTS 和 pnpm 11.19.0。
+当前分支已建立 pnpm Monorepo 工程基线。环境要求为 Node.js 24 LTS 和 pnpm 11.28.0。
 
 ```powershell
 pnpm install
