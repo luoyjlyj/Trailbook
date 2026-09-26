@@ -212,6 +212,11 @@ pnpm dev
 ## 项目资料
 
 - [产品计划书](./docs/product/product-plan.md)
+- [阶段 0 MVP、用户故事与验收矩阵（A 初稿）](./docs/product/mvp-user-stories-and-acceptance-matrix.md)
+- [重庆六类场景验收样例](./docs/testing/chongqing-six-scenario-acceptance-cases.md)
+- [阶段 0 环境互验报告（含 A 的记录）](./docs/testing/stage-0-environment-cross-validation.md)
+- [阶段 1 待确认事项与责任清单](./docs/product/stage-1-decisions-and-responsibilities.md)
+- [旅行产品参考与推荐取舍（美团、携程、高德、Wanderlog）](./docs/product/travel-product-reference-and-recommendations.md)
 - [项目架构与并行开发任务书](./docs/architecture/project-architecture-and-parallel-development.md)
 - [移动端高保真交互原型](./docs/prototypes/mobile-prototype.html)
 - [Web 管理后台可点击原型](./docs/prototypes/admin-prototype.html)
