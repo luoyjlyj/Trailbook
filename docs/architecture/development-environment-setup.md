@@ -1,223 +1,99 @@
-# Trailbook 开发环境安装步骤
+# Trailbook 最小开发环境
 
-## 1. 安装 Git
+> 当前仓库只有文档、HTML 原型和目录占位。下面说明后续开发时需要的环境，不表示应用已经能安装或运行。此次整理没有安装任何软件或依赖。
 
-Windows：安装 [Git for Windows](https://git-scm.com/download/win)。
+## 1. 现在查看项目
 
-安装后打开 PowerShell，验证：
+使用编辑器阅读 Markdown，使用浏览器打开：
 
-```powershell
-git --version
-```
+- [移动端原型](../prototypes/mobile-prototype.html)
+- [管理后台原型](../prototypes/admin-prototype.html)
+- [原型与首版范围](../prototypes/README.md)
 
-首次使用时配置提交信息：
+查看这些文件不需要数据库、Node.js 或任何构建命令。
 
-```powershell
-git config --global user.name "你的姓名"
-git config --global user.email "你的邮箱"
-```
+## 2. 开始写代码时准备
 
-## 2. 安装 Node.js 24 LTS
+| 工具 | 用途 | 何时需要 |
+| --- | --- | --- |
+| 编辑器，例如 VS Code | 编辑 TypeScript、页面和配置 | 开始开发时 |
+| Node.js 24 LTS | 运行后端和开发工具，自带 npm 包管理命令 | 开始开发时 |
+| pnpm | 安装项目依赖、运行脚本 | 建立应用时 |
+| Chrome 或 Edge | 调试管理后台 | 开发后台时 |
+| MySQL 8.0+ | 保存地点和行程 | 开发数据层时 |
+| Android 手机或模拟器 | 查看实际手机 App | 开发移动端时 |
 
-从 [Node.js 官网](https://nodejs.org/) 安装 Node.js 24 LTS。
+Git 可以继续用于保存已有仓库的版本，不要求先设置分支流程、PR、提交钩子或 CI。编辑器插件和专用接口调试工具按需要使用。
 
-验证：
+## 3. Node.js 和 pnpm
+
+从 [Node.js 官网](https://nodejs.org/)安装 Node.js 24 LTS。可用以下命令检查环境：
 
 ```powershell
 node --version
 npm --version
-```
-
-Node.js 版本应为 `24.x`。
-
-## 3. 启用 Corepack 并准备 pnpm
-
-```powershell
-corepack enable
-corepack prepare pnpm@latest --activate
 pnpm --version
 ```
 
-项目初始化后，以仓库 `package.json` 中固定的 pnpm 版本为准。
-
-## 4. 安装 Docker Desktop
-
-从 [Docker Desktop 官网](https://www.docker.com/products/docker-desktop/) 安装 Docker Desktop。
-
-Windows 安装时启用 WSL 2 后端。启动 Docker Desktop，验证：
+如果 pnpm 尚未安装，再参照 [pnpm 安装文档](https://pnpm.io/installation)选择适合本机的方法。例如使用 npm 安装 pnpm：
 
 ```powershell
-docker --version
-docker compose version
+npm install -g pnpm
 ```
 
-项目使用 Docker 运行 MySQL，不需要在本机单独安装 MySQL Server。
+这只是手动安装说明，不要求现在执行。这里不依赖 Corepack；若使用 Corepack，需要先确认本机已经安装。
 
-## 5. 安装开发编辑器
+Node.js 是运行环境，pnpm 是安装依赖和执行命令的工具。未来的 `package.json` 记录依赖及命令，pnpm workspace 连接同仓库模块；正常生成的锁文件可以保留，不需要额外锁管理工具。
 
-安装 VS Code 或团队统一的 IDE，并建议安装以下扩展：
+## 4. 数据层开发时准备 MySQL
 
-- ESLint
-- Prettier
-- TypeScript
-- Prisma
-- EditorConfig
+可以直接安装 [MySQL Community Server](https://dev.mysql.com/downloads/mysql/)，也可以连接已有开发数据库。使用开发专用数据库和账号，数据库名可设为 `trailbook`，字符集使用 `utf8mb4`。
 
-## 6. 安装 Android 开发环境
+Docker Compose 只是可选的本地运行方式，不是必须安装的工具。本仓库当前没有 `compose.yaml`。
 
-安装 [Android Studio](https://developer.android.com/studio)。在安装向导中启用：
+Prisma 后续作为项目依赖安装，不需要单独全局安装。等模型和脚本建立后，再生成客户端、创建数据表并导入首批地点。数据库迁移用于保存表结构变化，应在数据层实现时正常保留。
 
-- Android SDK
-- Android SDK Platform-Tools
-- Android SDK Build-Tools
-- Android Emulator
-- Android Virtual Device
+## 5. 移动端开发时准备 Expo
 
-打开 Android Studio 的 SDK Manager，安装与项目配置匹配的 Android SDK Platform 和 SDK Tools。
+React Native 和 Expo 后续安装在移动端项目中，使用项目自带的 Expo CLI。
 
-创建一个 Android Virtual Device，或准备一台开启 USB 调试的 Android 真机。
+- 开发基础界面时，可使用兼容当前 Expo 版本的 Expo Go 和 Android 真机。
+- 使用模拟器或本地编译 Android 应用时，需要 [Android Studio](https://developer.android.com/studio)、Android SDK 和相应 JDK。
+- 接入地图前，确认所选 SDK 的 React Native/Expo 支持情况。第三方原生模块不一定能在 Expo Go 中运行，可能需要 Development Build。
+- 如果本地开发或编译 iOS，需要 macOS 和 Xcode；也可按 Expo 支持情况选择云构建，真机安装仍需对应签名条件。
 
-验证设备连接：
+Windows 可先完成 Android 开发。手机访问电脑上的本地 API 时，要使用电脑的局域网地址；手机中的 `localhost` 指向手机自身。
 
-```powershell
-adb devices
-```
+## 6. 接外部服务时准备账号
 
-如果使用 Android 真机，开启手机的开发者选项和 USB 调试，并接受电脑授权提示。
+依次选择并开通：
 
-## 7. 安装 Expo 开发工具
+1. 地图：手机地图 SDK，以及后端地址搜索、地理编码和路线接口。
+2. 天气：能覆盖试点城市及所需日期的天气接口。
+3. 大模型：支持结构化输出的 API，主流程跑通后接入。
 
-项目初始化后进入移动端目录，安装依赖：
+确认地图坐标系、交通方式覆盖、天气预报范围、调用配额和费用。地图标记显示成功不代表路线计算接口也已开通。
 
-```powershell
-pnpm install
-```
+## 7. 后续环境变量
 
-使用项目依赖运行 Expo，不建议全局安装旧版 Expo CLI：
-
-```powershell
-pnpm exec expo --version
-```
-
-如果项目使用 Expo Development Build，按项目配置安装对应的 Android 原生依赖并重新构建开发客户端。
-
-## 8. 安装浏览器和接口调试工具
-
-安装最新版 Chrome 或 Edge，用于 Web 管理后台调试。
-
-安装 [Apifox](https://apifox.com/) 或 [Postman](https://www.postman.com/)，用于验证 API、请求参数、错误码和认证流程。团队统一选择其中一个工具。
-
-## 9. 获取项目代码
-
-```powershell
-git clone https://github.com/luoyjlyj/Trailbook.git
-cd Trailbook
-git switch main
-```
-
-如果团队指定使用 `develop`：
-
-```powershell
-git switch develop
-```
-
-## 10. 安装项目依赖
-
-在仓库根目录执行：
-
-```powershell
-pnpm install
-```
-
-确认根目录使用单一的 `pnpm-lock.yaml`，不要混用 npm 或 yarn 锁文件。
-
-## 11. 配置环境变量
-
-项目初始化后，复制环境变量模板：
-
-```powershell
-Copy-Item .env.example .env
-```
-
-至少配置：
+实现 API 时再建立环境模板，示意如下：
 
 ```env
-DATABASE_URL=mysql://user:password@localhost:3306/travel_app
-MAP_API_KEY=你的地图服务开发密钥
-WEATHER_API_KEY=你的天气服务开发密钥
-LLM_API_KEY=你的模型服务开发密钥
+API_PORT=3000
+DATABASE_URL=mysql://trailbook_dev:replace_me@localhost:3306/trailbook
+MAP_API_KEY=replace_me
+WEATHER_API_KEY=replace_me
+LLM_API_KEY=replace_me
 ```
 
-真实密钥只能保存在本地或受控部署环境，不得提交到 Git。
+API 负责加载实际环境变量。移动端和后台只配置 API 地址，以及地图 SDK 必须使用的受限客户端 Key。模型、天气和服务端地图密钥不写入客户端；客户端公开变量可被使用者读取。
 
-## 12. 启动 MySQL
+未来本地 `.env` 不提交，`.env.example` 只放示例。实际变量名按选定供应商确定。
 
-确认仓库根目录已有 `compose.yaml`，并且数据库服务名为 `db` 后执行：
+## 8. 应用建立之后再补充启动命令
 
-```powershell
-docker compose up -d db
-docker compose ps
-```
+当前没有 `package.json`、Prisma Schema、环境模板和启动脚本，因此暂不提供可直接执行的项目启动命令。
 
-确认 MySQL 使用 `utf8mb4` 字符集。数据库连接端口默认为 `3306`。
+后续每完成一个模块，就补充对应的安装、启动和验证方法：先能打开最小页面并访问 API，再连上数据库，再接地图、天气和规划逻辑。确认这些功能能够工作即可，不要求先安装 ESLint、Prettier、测试框架或配置 GitHub Actions。
 
-## 13. 执行 Prisma 数据库初始化
-
-项目初始化后，在仓库根目录执行：
-
-```powershell
-pnpm prisma generate
-pnpm prisma migrate dev
-pnpm prisma db seed
-```
-
-验证数据库读写和 Prisma Studio：
-
-```powershell
-pnpm prisma studio
-```
-
-## 14. 启动项目
-
-```powershell
-pnpm dev
-```
-
-如果项目未提供统一启动脚本，分别启动 API、Web 管理端和移动端：
-
-```powershell
-pnpm --filter api dev
-pnpm --filter admin dev
-pnpm --filter mobile start
-```
-
-实际脚本名称以根目录和各 workspace 的 `package.json` 为准。
-
-## 15. 安装完成检查
-
-依次执行：
-
-```powershell
-node --version
-pnpm --version
-git --version
-docker --version
-docker compose version
-adb devices
-pnpm typecheck
-pnpm lint
-pnpm test
-```
-
-最后使用 Apifox/Postman 验证地点查询和行程生成接口，再在 Android 模拟器或真机完成以下流程：
-
-```text
-填写出行信息 → 生成行程 → 查看时间线 → 切换地图 → 替换雨天活动 → 保存行程
-```
-
-## 16. 可选环境
-
-- iOS 开发：需要 macOS、Xcode 和 iOS Simulator。
-- 真机地图测试：需要地图服务开发密钥、定位权限和可用网络。
-- 生产部署：另行准备 MySQL、API、Web、对象存储、域名和密钥管理环境。
-
+实现顺序见[最小实现方案](minimal-implementation-plan.md)，功能范围见[产品计划](../product/product-plan.md)。
