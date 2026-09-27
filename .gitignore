@@ -1,0 +1,37 @@
+# Dependencies (applies to every app/package)
+node_modules/
+
+# Expo local state and generated output
+.expo/
+web-build/
+
+# Build output and caches
+dist/
+build/
+coverage/
+.cache/
+*.tsbuildinfo
+.eslintcache
+
+# Local environment and secrets; keep example templates
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Mobile signing credentials
+*.jks
+*.keystore
+*.p12
+*.p8
+*.mobileprovision
+
+# Logs
+*.log
+
+# Operating system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Keep package.json and package-lock.json under version control.

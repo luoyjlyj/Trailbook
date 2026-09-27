@@ -9,6 +9,8 @@
 
 ## 移动端
 
+当前已参考原型首页编写 [Expo/React Native 首页](../../apps/mobile/src/screens/HomeScreen.tsx)，启动方法见[移动端说明](../../apps/mobile/README.md)。这是独立的应用代码，不是直接嵌入 HTML；目前仅首页和提示弹窗可用。原有两个 HTML 原型保持不变，仍用于后续页面参考。
+
 | 原型页面 | 首版如何使用 |
 | --- | --- |
 | 首页 | 保留创建与继续行程入口，限定一个试点城市 |

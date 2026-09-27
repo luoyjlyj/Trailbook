@@ -2,7 +2,13 @@
   "name": "@trailbook/mobile",
   "version": "0.0.0",
   "private": true,
-  "description": "Trailbook mobile dependency manifest. App entry and configuration are not implemented yet.",
+  "description": "Trailbook mobile app with an Expo Web homepage preview.",
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "web": "expo start --web",
+    "typecheck": "tsc --noEmit"
+  },
   "engines": {
     "node": ">=24.3.0 <25"
   },

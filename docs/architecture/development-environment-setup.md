@@ -1,6 +1,6 @@
 # Trailbook 最小开发环境
 
-> 当前仓库只有文档、HTML 原型和目录占位。下面说明后续开发时需要的环境，不表示应用已经能安装或运行。此次整理没有安装任何软件或依赖。
+> 当前已建立 Expo/React Native 首页，先在 PC 浏览器中预览；其他应用和公共模块仍为占位。本次首页实现沿用已安装依赖，没有新增 npm 依赖或安装全局工具。
 
 ## 1. 现在查看项目
 
@@ -18,32 +18,32 @@
 | --- | --- | --- |
 | 编辑器，例如 VS Code | 编辑 TypeScript、页面和配置 | 开始开发时 |
 | Node.js 24 LTS | 运行后端和开发工具，自带 npm 包管理命令 | 开始开发时 |
-| pnpm | 安装项目依赖、运行脚本 | 建立应用时 |
-| Chrome 或 Edge | 调试管理后台 | 开发后台时 |
+| npm（随 Node.js 提供） | 安装项目依赖、运行脚本 | 当前移动端工程使用 |
+| Chrome 或 Edge | 预览 Expo Web，之后调试管理后台 | 当前就需要 |
 | MySQL 8.0+ | 保存地点和行程 | 开发数据层时 |
-| Android 手机或模拟器 | 查看实际手机 App | 开发移动端时 |
+| Android 手机或模拟器 | 验证 Android 原生界面和设备能力 | 进入 Android 验证时，当前 Web 预览不需要 |
 
 Git 可以继续用于保存已有仓库的版本，不要求先设置分支流程、PR、提交钩子或 CI。编辑器插件和专用接口调试工具按需要使用。
 
-## 3. Node.js 和 pnpm
+## 3. Node.js 和 npm
 
 从 [Node.js 官网](https://nodejs.org/)安装 Node.js 24 LTS。可用以下命令检查环境：
 
 ```powershell
 node --version
 npm --version
-pnpm --version
 ```
 
-如果 pnpm 尚未安装，再参照 [pnpm 安装文档](https://pnpm.io/installation)选择适合本机的方法。例如使用 npm 安装 pnpm：
+当前使用 Node.js 自带的 npm，不需要另装 pnpm，也不需要全局安装 Expo 或 TypeScript。在项目根目录打开终端：
 
 ```powershell
-npm install -g pnpm
+cd apps/mobile
+npm run web
 ```
 
-这只是手动安装说明，不要求现在执行。这里不依赖 Corepack；若使用 Corepack，需要先确认本机已经安装。
+如果是新检出的项目，还没有 `node_modules`，先在 `apps/mobile` 执行 `npm ci`；已经安装就跳过。访问启动日志显示的地址，通常为 `http://localhost:8081`。端口被占用时按终端提示选择其他端口，或运行 `npm run web -- --port 8082`。
 
-Node.js 是运行环境，pnpm 是安装依赖和执行命令的工具。未来的 `package.json` 记录依赖及命令，pnpm workspace 连接同仓库模块；正常生成的锁文件可以保留，不需要额外锁管理工具。
+`package.json` 记录依赖和脚本，`package-lock.json` 固定安装结果，依赖放在该项目的 `node_modules` 中。npm 还会使用用户级缓存，但这不等于全局安装项目依赖。当前没有根目录 workspace。依赖目录、Expo 缓存和构建产物已由根目录 `.gitignore` 忽略，清单和锁文件应保留。
 
 ## 4. 数据层开发时准备 MySQL
 
@@ -55,14 +55,16 @@ Prisma 后续作为项目依赖安装，不需要单独全局安装。等模型�
 
 ## 5. 移动端开发时准备 Expo
 
-React Native 和 Expo 后续安装在移动端项目中，使用项目自带的 Expo CLI。
+React Native 和 Expo 已作为移动端项目依赖安装，`npm run web` 使用项目内的 Expo CLI 启动 Metro 开发服务。页面通过 React Native Web 在浏览器显示，不是 Android 模拟器。
+
+当前先完成基础界面和交互，之后再验证原生端：
 
 - 开发基础界面时，可使用兼容当前 Expo 版本的 Expo Go 和 Android 真机。
 - 使用模拟器或本地编译 Android 应用时，需要 [Android Studio](https://developer.android.com/studio)、Android SDK 和相应 JDK。
 - 接入地图前，确认所选 SDK 的 React Native/Expo 支持情况。第三方原生模块不一定能在 Expo Go 中运行，可能需要 Development Build。
 - 如果本地开发或编译 iOS，需要 macOS 和 Xcode；也可按 Expo 支持情况选择云构建，真机安装仍需对应签名条件。
 
-Windows 可先完成 Android 开发。手机访问电脑上的本地 API 时，要使用电脑的局域网地址；手机中的 `localhost` 指向手机自身。
+没有 Android 真机时，到 Android 验证阶段再准备模拟器即可。Web 预览通过不代表原生地图、权限、键盘和安全区域都已验证。手机访问电脑上的本地 API 时，要使用电脑的局域网地址；手机中的 `localhost` 指向手机自身。
 
 ## 6. 接外部服务时准备账号
 
@@ -90,9 +92,11 @@ API 负责加载实际环境变量。移动端和后台只配置 API 地址，�
 
 未来本地 `.env` 不提交，`.env.example` 只放示例。实际变量名按选定供应商确定。
 
-## 8. 应用建立之后再补充启动命令
+## 8. 当前检查与后续范围
 
-当前没有 `package.json`、Prisma Schema、环境模板和启动脚本，因此暂不提供可直接执行的项目启动命令。
+在 `apps/mobile` 中运行 `npm run typecheck` 可检查 TypeScript。当前首页只有演示内容，无需 `.env`、Prisma Schema、数据库或后端进程。
+
+Expo 启动时可能尝试准备原生 React Native DevTools。如果出现该工具准备失败的警告，但 Web 服务和页面仍正常，可先使用浏览器开发者工具；不要为了当前首页预览额外安装 Android 工具。
 
 后续每完成一个模块，就补充对应的安装、启动和验证方法：先能打开最小页面并访问 API，再连上数据库，再接地图、天气和规划逻辑。确认这些功能能够工作即可，不要求先安装 ESLint、Prettier、测试框架或配置 GitHub Actions。
 
