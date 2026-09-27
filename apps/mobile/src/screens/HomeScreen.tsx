@@ -1,8 +1,7 @@
 import { useState, type ReactNode } from 'react';
+import { router } from 'expo-router';
 import {
-  Image,
   ImageBackground,
-  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -14,6 +13,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { prototypePhotos } from '../assets/prototype-photos';
+import { BottomNav, Notice as StorageNotice } from '../components/ui';
+import { useTravel } from '../state/TravelContext';
 
 const colors = {
   ink: '#20342c',
@@ -32,7 +33,6 @@ const places = [
   { key: 'hotpot', name: '重庆火锅', caption: '晚餐安排 · 特色美食', description: '为一顿热气腾腾的火锅留出晚餐时间，也为排队与返程留些余量。' },
 ] as const;
 
-type Notice = { title: string; body: string; image?: string };
 type IconName = 'home' | 'route' | 'spark' | 'user' | 'search' | 'link';
 
 function Icon({ name, color = colors.green }: { name: IconName; color?: string }) {
@@ -83,10 +83,9 @@ function Action({ children, label, onPress, style, selected }: {
 }
 
 export function HomeScreen() {
-  const [notice, setNotice] = useState<Notice | null>(null);
-  const showPending = (title: string, body: string) => setNotice({ title, body });
-  const plan = () => showPending('从这里，开始下一程', '创建计划页面尚未实现。这一版先预览首页；后续会在这里填写城市、日期、住宿和出行偏好。');
-  const trip = () => showPending('重庆三天两夜 · 示例', '这是原型中的演示行程，不是已保存的真实计划。每日时间线、地图和行程保存将在后续接入。');
+  const travel = useTravel();
+  const plan = () => router.push('/plan');
+  const trip = () => { if (!travel.trip) travel.newDemo(); router.navigate('/trip'); };
 
   return (
     <SafeAreaView style={styles.root} edges={['top', 'bottom']}>
@@ -98,10 +97,12 @@ export function HomeScreen() {
               <Text style={styles.brandName}>路书</Text>
               <Text style={styles.brandEnglish}>TRAILBOOK</Text>
             </View>
-            <Action label="查看我的（功能待开发）" onPress={() => showPending('我的路书', '已保存行程、收藏和出行偏好将在后续接入。当前没有登录或保存个人信息。')} style={styles.avatar}>
+            <Action label="查看我的" onPress={() => router.navigate('/me')} style={styles.avatar}>
               <Text style={styles.avatarText}>旅</Text>
             </Action>
           </View>
+
+          {!!travel.storageError && <StorageNotice warning>{travel.storageError}</StorageNotice>}
 
           <Text style={styles.eyebrow}>GO SOMEWHERE GOOD</Text>
           <Text accessibilityRole="header" style={styles.title}>想去哪儿，{'\n'}<Text style={styles.titleGreen}>就从这里出发。</Text></Text>
@@ -144,7 +145,7 @@ export function HomeScreen() {
             <View style={styles.tripTop}>
               <View style={styles.tripDescription}>
                 <Text style={styles.tripTitle}>重庆三天两夜</Text>
-                <Text style={styles.tripDate}>9月26日—28日 · 示例行程</Text>
+                <Text style={styles.tripDate}>10月1日—3日 · 固定演示行程</Text>
               </View>
               <View style={styles.roundArrow}><Text style={styles.arrow}>↗</Text></View>
             </View>
@@ -164,7 +165,7 @@ export function HomeScreen() {
                 key={place.key}
                 label={`查看${place.name}示例介绍`}
                 style={styles.photoCard}
-                onPress={() => setNotice({ title: place.name, body: `${place.description}\n\n图片与说明为原型演示素材，不代表已核验的地点、营业信息或旅行建议。`, image: prototypePhotos[place.key] })}
+                onPress={() => router.push({ pathname: '/place', params: { id: place.key } })}
               >
                 <ImageBackground source={{ uri: prototypePhotos[place.key] }} style={styles.photo} resizeMode="cover">
                   <View style={styles.photoCaption}>
@@ -179,64 +180,23 @@ export function HomeScreen() {
           <View style={styles.sectionHeading}>
             <Text accessibilityRole="header" style={styles.sectionTitle}>把喜欢的攻略带进来</Text>
           </View>
-          <Action label="添加攻略线索（功能待开发）" onPress={() => showPending('把喜欢的攻略带进来', '攻略录入尚未接入。后续可填写你主动提供的文字或来源链接，并核验其中的地点信息。')} style={styles.inspiration}>
+          <Action label="添加攻略线索" onPress={plan} style={styles.inspiration}>
             <View style={styles.inspirationIcon}><Icon name="link" color="#aa764e" /></View>
             <View style={styles.inspirationCopy}>
               <Text style={styles.inspirationTitle}>加一条你收藏的攻略线索</Text>
-              <Text style={styles.inspirationSubtitle}>之后可从链接或文字识别地点与时段</Text>
+              <Text style={styles.inspirationSubtitle}>先记录链接或文字，暂不自动解析</Text>
             </View>
             <Text style={styles.inspirationArrow}>›</Text>
           </Action>
 
           <View style={styles.demoNote}>
             <View style={styles.demoDot} />
-            <Text style={styles.demoText}>首页预览 · 行程与图片均为演示内容</Text>
+            <Text style={styles.demoText}>前端演示 · 地图、天气与真实规划未接入</Text>
           </View>
         </ScrollView>
 
-        <View style={styles.navigation}>
-          {([
-            { name: 'home', label: '首页' },
-            { name: 'route', label: '行程' },
-            { name: 'spark', label: '发现' },
-            { name: 'user', label: '我的' },
-          ] as const).map((tab) => (
-            <Action
-              key={tab.name}
-              label={tab.label === '首页' ? '首页，当前页面' : `${tab.label}（功能待开发）`}
-              selected={tab.name === 'home'}
-              style={styles.navItem}
-              onPress={() => {
-                if (tab.name === 'home') setNotice(null);
-                else if (tab.name === 'route') trip();
-                else showPending(tab.name === 'spark' ? '发现一座城' : '我的路书', `${tab.label}页面尚未实现，当前版本仅提供首页预览。`);
-              }}
-            >
-              <View style={[styles.navIcon, tab.name === 'home' && styles.navIconActive]}>
-                <Icon name={tab.name} color={tab.name === 'home' ? colors.green : '#8a998e'} />
-              </View>
-              <Text style={[styles.navLabel, tab.name === 'home' && styles.navLabelActive]}>{tab.label}</Text>
-            </Action>
-          ))}
-        </View>
+        <BottomNav />
       </View>
-
-      <Modal visible={notice !== null} transparent animationType="fade" onRequestClose={() => setNotice(null)}>
-        <View style={styles.modalOverlay}>
-          <Pressable accessibilityRole="button" accessibilityLabel="关闭预览提示" onPress={() => setNotice(null)} style={StyleSheet.absoluteFill} />
-          <View style={styles.modalCard} accessibilityViewIsModal>
-            <ScrollView contentContainerStyle={styles.modalContent}>
-              <Text style={styles.modalKicker}>TRAILBOOK · 首页预览</Text>
-              <Text accessibilityRole="header" style={styles.modalTitle}>{notice?.title}</Text>
-              {notice?.image && <Image source={{ uri: notice.image }} accessibilityLabel={`${notice.title}演示图片`} style={styles.modalImage} />}
-              <Text style={styles.modalBody}>{notice?.body}</Text>
-              <Action label="知道了，返回首页" onPress={() => setNotice(null)} style={styles.modalButton}>
-                <Text style={styles.modalButtonText}>知道了，返回首页</Text>
-              </Action>
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
     </SafeAreaView>
   );
 }
@@ -312,20 +272,5 @@ const styles = StyleSheet.create({
   demoNote: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 24, marginBottom: 6 },
   demoDot: { width: 5, height: 5, borderRadius: 3, backgroundColor: '#b1bdac' },
   demoText: { fontSize: 10, color: colors.muted, flexShrink: 1, lineHeight: 16 },
-  navigation: { flexDirection: 'row', backgroundColor: colors.paper, borderTopWidth: 1, borderTopColor: colors.line, paddingTop: 7, paddingBottom: 10, paddingHorizontal: 8 },
-  navItem: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 52, gap: 3, borderRadius: 10 },
-  navIcon: { width: 38, height: 30, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
-  navIconActive: { backgroundColor: '#e6f1e8' },
-  navLabel: { fontSize: 10, color: '#7c8d81', fontWeight: '500' },
-  navLabelActive: { color: colors.green, fontWeight: '700' },
   focused: { boxShadow: '0 0 0 3px #ea8a69' },
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(22,43,32,0.46)', justifyContent: 'center', alignItems: 'center', padding: 24 },
-  modalCard: { width: '100%', maxWidth: 380, maxHeight: '85%', borderRadius: 24, overflow: 'hidden', backgroundColor: colors.paper },
-  modalContent: { padding: 24 },
-  modalKicker: { fontSize: 10, color: colors.green, letterSpacing: 1.3, fontWeight: '600' },
-  modalTitle: { fontSize: 23, lineHeight: 32, color: colors.ink, fontWeight: '700', marginTop: 12, marginBottom: 15 },
-  modalImage: { width: '100%', height: 180, borderRadius: 14, marginBottom: 16 },
-  modalBody: { color: '#66796b', fontSize: 14, lineHeight: 24 },
-  modalButton: { marginTop: 24, backgroundColor: colors.green, borderRadius: 13, minHeight: 46, alignItems: 'center', justifyContent: 'center', padding: 12 },
-  modalButtonText: { color: '#fffdf8', fontSize: 13, fontWeight: '600' },
 });
