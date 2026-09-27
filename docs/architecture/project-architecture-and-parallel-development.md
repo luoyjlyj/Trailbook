@@ -1,5 +1,8 @@
 # 路书 Trailbook 项目架构与并行开发任务书
 
+> **需求变更入口（2026-09-27，CR-20260927-01）：** 本期仅重庆；新增“当前 POI → 内容获取 → 地图核验 → DeepSeek 推荐 → 项目数据库复用”。已确认使用 DeepSeek 官方 API，“本地库”指项目数据库；功能面向任意经确认的重庆游玩地点，老君洞仅为举例。沿用现有工程和轻量部署方向，内容渠道、具体模型配置与预算仍待验证。增量职责与技术边界见[老师最新指示与落地方案](../product/teacher-update-chongqing-personalization.md)，不将已有原型视为真实服务交付。
+
+
 ## 主仓库
 
 [https://github.com/luoyjlyj/Trailbook.git](https://github.com/luoyjlyj/Trailbook.git)
