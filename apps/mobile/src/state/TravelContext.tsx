@@ -1,9 +1,11 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { copyTrip, decodeLibrary, emptyDraft, emptyLibrary, makeDemoTrip, updateActivity, type Draft, type Library, type Trip } from '../lib/travel';
 import { storage } from '../lib/storage';
+import type { ValidationReceipt } from '../lib/api';
 
 function useTravelState() {
   const [draft, setDraft] = useState<Draft>({ ...emptyDraft, interests: [] });
+  const [receipt, setReceipt] = useState<ValidationReceipt | null>(null);
   const [trip, setTrip] = useState<Trip | null>(null);
   const [previous, setPrevious] = useState<Trip | null>(null);
   const [dayIndex, setDayIndex] = useState(0);
@@ -43,7 +45,7 @@ function useTravelState() {
     return commit({ ...library, saved }) ? storage.persistent ? '已保存到此浏览器；未上传服务器，不支持跨设备同步。' : '已保留在本次运行内存中；关闭应用后会丢失。' : '保存失败，没有写入新的副本。';
   };
   return {
-    draft, setDraft, trip, dayIndex, setDayIndex, view, setView, ready, library, storageError,
+    draft, setDraft, receipt, setReceipt, trip, dayIndex, setDayIndex, view, setView, ready, library, storageError,
     persistent: storage.persistent, dirty, canUndo: !!previous, newDemo, openSaved, edit, save,
     undo: () => { if (previous) { setTrip(previous); setPrevious(null); } },
     toggleFavorite: (id: string) => commit({ ...library, favorites: library.favorites.includes(id) ? library.favorites.filter(value => value !== id) : [...library.favorites, id] }),

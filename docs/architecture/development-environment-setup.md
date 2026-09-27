@@ -1,6 +1,6 @@
 # Trailbook 最小开发环境
 
-> 当前已建立 Expo/React Native 多页面前端演示，先在 PC 浏览器中预览；其他应用和公共模块仍为占位。实现沿用已安装依赖，没有新增 npm 依赖或安装全局工具。
+> 当前移动端多页面演示已接入本地需求校验后端。`apps/api` 独立安装了 Hono、Node 适配包、Zod、TypeScript 和 Node 类型包；无全局安装，前端依赖未变。后台和公共模块仍为占位，先验证 PC Web。
 
 ## 1. 现在查看项目
 
@@ -18,7 +18,7 @@
 | --- | --- | --- |
 | 编辑器，例如 VS Code | 编辑 TypeScript、页面和配置 | 开始开发时 |
 | Node.js 24 LTS | 运行后端和开发工具，自带 npm 包管理命令 | 开始开发时 |
-| npm（随 Node.js 提供） | 安装项目依赖、运行脚本 | 当前移动端工程使用 |
+| npm（随 Node.js 提供） | 安装项目依赖、运行脚本 | 当前前端和后端分别使用 |
 | Chrome 或 Edge | 预览 Expo Web，之后调试管理后台 | 当前就需要 |
 | MySQL 8.0+ | 保存地点和行程 | 开发数据层时 |
 | Android 手机或模拟器 | 验证 Android 原生界面和设备能力 | 进入 Android 验证时，当前 Web 预览不需要 |
@@ -42,6 +42,8 @@ npm run web
 ```
 
 如果是新检出的项目，还没有 `node_modules`，先在 `apps/mobile` 执行 `npm ci`；已经安装就跳过。访问启动日志显示的地址，通常为 `http://localhost:8081`。端口被占用时按终端提示选择其他端口，或运行 `npm run web -- --port 8082`。
+
+需求提交需要第二个终端在 `apps/api` 中执行 `npm start`，开发自动重启用 `npm run dev`。该目录同样在首次使用时执行 `npm ci`；现在依赖已安装。默认后端为 `127.0.0.1:3000`，仅本机监听。`GET /health` 可检查服务。前端换成 8082 等端口时，需同步调整后端 `WEB_ORIGINS` 并重启，否则浏览器请求会被拒绝。
 
 `package.json` 记录依赖和脚本，`package-lock.json` 固定安装结果，依赖放在该项目的 `node_modules` 中。npm 还会使用用户级缓存，但这不等于全局安装项目依赖。当前没有根目录 workspace。依赖目录、Expo 缓存和构建产物已由根目录 `.gitignore` 忽略，清单和锁文件应保留。
 
@@ -76,12 +78,13 @@ React Native 和 Expo 已作为移动端项目依赖安装，`npm run web` 使�
 
 确认地图坐标系、交通方式覆盖、天气预报范围、调用配额和费用。地图标记显示成功不代表路线计算接口也已开通。
 
-## 7. 后续环境变量
+## 7. 当前及后续环境变量
 
-实现 API 时再建立环境模板，示意如下：
+当前已有 `apps/api/.env.example` 和 `apps/mobile/.env.example`。默认不用创建实际 `.env`：API 使用 `PORT=3000`，`WEB_ORIGINS=http://localhost:8081,http://127.0.0.1:8081`；前端使用 `EXPO_PUBLIC_API_URL=http://127.0.0.1:3000`。Node 从 API 目录的 `.env` 加载可选配置，Expo 在重启后加载前端地址。
+
+后续数据层和外部服务接入时再补充以下变量，目前不使用：
 
 ```env
-API_PORT=3000
 DATABASE_URL=mysql://trailbook_dev:replace_me@localhost:3306/trailbook
 MAP_API_KEY=replace_me
 WEATHER_API_KEY=replace_me
@@ -94,9 +97,9 @@ API 负责加载实际环境变量。移动端和后台只配置 API 地址，�
 
 ## 8. 当前检查与后续范围
 
-在 `apps/mobile` 中运行 `npm run typecheck` 检查 TypeScript，`npm test` 使用 Node 24 自带测试运行器检查表单校验、锁定保护和演示存储结构。无需安装第三方测试框架。当前页面只有本地交互和固定演示内容，无需 `.env`、Prisma Schema、数据库或后端进程。
+在 `apps/mobile` 和 `apps/api` 中分别运行 `npm run typecheck` 与 `npm test`，检查页面请求逻辑和后端校验。测试使用 Node 24 自带能力，无额外测试框架。需求提交需要后端进程；独立固定样例不依赖后端。默认配置无需 `.env`、Prisma Schema 或数据库。
 
-浏览器保存使用 `localStorage`，只保存用户主动保存的演示副本及收藏。需求表单不持久化、不上传。读写失败会显示提示，损坏数据不会自动覆盖；可通过“我的”里的确认操作清除本应用的演示存储。原生端暂时仅有内存存储，不应宣传为原生持久化完成。
+浏览器保存使用 `localStorage`，只保存用户主动保存的演示副本及收藏。需求表单在点击提交时发到本地后端校验，不持久化、不转发第三方。读写失败会显示提示，损坏数据不会自动覆盖；可通过“我的”里的确认操作清除本应用的演示存储。原生端暂时仅有内存存储，不应宣传为原生持久化完成。
 
 Expo 启动时可能尝试准备原生 React Native DevTools。如果出现该工具准备失败的警告，但 Web 服务和页面仍正常，可先使用浏览器开发者工具；不要为了当前 Web 预览额外安装 Android 工具。
 
