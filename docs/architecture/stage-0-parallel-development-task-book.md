@@ -617,3 +617,13 @@ Web 后台业务模块实现
 → TB-0105 内容合规
 → TB-0106 核心数据字典
 ```
+
+## A 的阶段 0 交付文档（评审初稿）
+
+以下文档于 2026-09-26 补充，供团队评审和后续执行；不代表阶段 0 或业务验收已通过。
+
+- [TB-0003：MVP、用户故事与验收矩阵](../product/mvp-user-stories-and-acceptance-matrix.md)
+- [TB-0003：重庆六类场景验收样例](../testing/chongqing-six-scenario-acceptance-cases.md)
+- [TB-0004：环境互验报告及 A 的记录](../testing/stage-0-environment-cross-validation.md)
+- [阶段 1 待确认事项与责任清单](../product/stage-1-decisions-and-responsibilities.md)
+- [旅行产品参考与推荐取舍](../product/travel-product-reference-and-recommendations.md)：为阶段 1 推荐方案提供公开资料依据，不替代团队会签或技术验证。

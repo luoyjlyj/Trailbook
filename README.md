@@ -1,5 +1,8 @@
 # 路书 Trailbook
 
+> **最新需求（2026-09-27，CR-20260927-01）：** 本期仅做重庆，增加基于当前地点的个性化推荐，优先验证每次小红书和抖音各采 5 条、合并最多 10 条、用户刷新立即获取；接入真实地图与 DeepSeek API，来源和推荐存入项目数据库复用。老君洞仅为举例，功能面向任意经确认的重庆游玩地点。轻量实现及验收口径见[老师最新指示与落地方案](docs/product/teacher-update-chongqing-personalization.md)。这是需求更新，尚不代表服务已接入。
+
+
 城市旅行智能攻略与动态行程规划产品。
 
 路书帮助用户回答一个具体的问题：**“我什么时候到、住在哪里、能玩多久、喜欢什么，接下来应该怎么走？”**
@@ -212,6 +215,11 @@ pnpm dev
 ## 项目资料
 
 - [产品计划书](./docs/product/product-plan.md)
+- [阶段 0 MVP、用户故事与验收矩阵（A 初稿）](./docs/product/mvp-user-stories-and-acceptance-matrix.md)
+- [重庆六类场景验收样例](./docs/testing/chongqing-six-scenario-acceptance-cases.md)
+- [阶段 0 环境互验报告（含 A 的记录）](./docs/testing/stage-0-environment-cross-validation.md)
+- [阶段 1 待确认事项与责任清单](./docs/product/stage-1-decisions-and-responsibilities.md)
+- [旅行产品参考与推荐取舍（美团、携程、高德、Wanderlog）](./docs/product/travel-product-reference-and-recommendations.md)
 - [项目架构与并行开发任务书](./docs/architecture/project-architecture-and-parallel-development.md)
 - [移动端高保真交互原型](./docs/prototypes/mobile-prototype.html)
 - [Web 管理后台可点击原型](./docs/prototypes/admin-prototype.html)

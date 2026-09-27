@@ -1,5 +1,17 @@
 # Trailbook 开发环境安装步骤
 
+## 推荐版本基线（2026-09-26）
+
+| 工具 | 推荐版本 | 统一方式 |
+|---|---|---|
+| Node.js | `24.21.0` LTS | 全员使用同一 24.x 补丁版本；仓库提交 `.nvmrc` |
+| pnpm | `11.28.0` | 全局安装指定版本；根 `package.json` 固定 `packageManager` |
+| Docker Compose | `5.5.1` | Docker Desktop 内的 Compose 插件以此为项目验证基线 |
+| Chrome | `154` Stable | 保持稳定版自动更新；验收记录实际完整版本号 |
+| Apifox | `2.8.48` | 团队统一使用 Apifox；若团队选择 Postman，再统一其稳定版客户端 |
+
+版本以本表为项目当前基线。升级时由团队先验证，再同步更新文档和仓库配置。
+
 ## 1. 安装 Git
 
 Windows：安装 [Git for Windows](https://git-scm.com/download/win)。
@@ -17,9 +29,9 @@ git config --global user.name "你的姓名"
 git config --global user.email "你的邮箱"
 ```
 
-## 2. 安装 Node.js 24 LTS
+## 2. 安装 Node.js 24.21.0 LTS
 
-从 [Node.js 官网](https://nodejs.org/) 安装 Node.js 24 LTS。
+从 [Node.js 官网](https://nodejs.org/) 安装 Node.js `24.21.0` LTS。
 
 验证：
 
@@ -28,21 +40,20 @@ node --version
 npm --version
 ```
 
-Node.js 版本应为 `24.x`。
+Node.js 版本应为 `v24.21.0`。
 
-## 3. 启用 Corepack 并准备 pnpm
+## 3. 安装 pnpm 11.28.0
 
 ```powershell
-corepack enable
-corepack prepare pnpm@latest --activate
+npm install --global pnpm@11.28.0
 pnpm --version
 ```
 
-项目初始化后，以仓库 `package.json` 中固定的 pnpm 版本为准。
+输出应为 `11.28.0`。仓库初始化时在根 `package.json` 写入 `"packageManager": "pnpm@11.28.0"`，并以仓库版本为准。
 
 ## 4. 安装 Docker Desktop
 
-从 [Docker Desktop 官网](https://www.docker.com/products/docker-desktop/) 安装 Docker Desktop。
+从 [Docker Desktop 官网](https://www.docker.com/products/docker-desktop/) 安装 Docker Desktop。项目的 Docker Compose 验证基线为 `5.5.1`。
 
 Windows 安装时启用 WSL 2 后端。启动 Docker Desktop，验证：
 
@@ -50,6 +61,8 @@ Windows 安装时启用 WSL 2 后端。启动 Docker Desktop，验证：
 docker --version
 docker compose version
 ```
+
+检查 Compose 插件版本为 `5.5.1`；如果 Docker Desktop 更新带来更高版本，团队先完成兼容验证并统一记录。
 
 项目使用 Docker 运行 MySQL，不需要在本机单独安装 MySQL Server。
 
@@ -103,9 +116,9 @@ pnpm exec expo --version
 
 ## 8. 安装浏览器和接口调试工具
 
-安装最新版 Chrome 或 Edge，用于 Web 管理后台调试。
+安装 Chrome Stable `154`（可保持自动更新），用于 Web 管理后台调试；验收时记录 `chrome://version` 显示的完整版本号。
 
-安装 [Apifox](https://apifox.com/) 或 [Postman](https://www.postman.com/)，用于验证 API、请求参数、错误码和认证流程。团队统一选择其中一个工具。
+安装 [Apifox](https://apifox.com/) 或 [Postman](https://www.postman.com/)，用于验证 API、请求参数、错误码和认证流程。项目建议统一使用 Apifox `2.8.48`；如团队选择 Postman，应统一客户端稳定版并记录版本。
 
 ## 9. 获取项目代码
 
